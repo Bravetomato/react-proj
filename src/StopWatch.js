@@ -3,10 +3,12 @@ import React, { useState } from "react";
 function StopWatch() {
   const [num, setNum] = useState(0);
 
-  let timeoutId = setTimeout(
-    () => setNum(num + 1),
-    1000
-  ); /*리렌더링 되면서 1초에 숫자가 1씩 추가된다. let으로 선언한 것이 포인트*/
+  let timeoutId = setTimeout(() => setNum(num + 1), 1000);
+  // 리렌더링 되면서 1초에 숫자가 1씩 추가된다. let으로 선언한 것이 포인트.
+  // const 로 선언한 경우 변경 불가. const 떼고 이름 = 값; 적는 것도 불가.
+  // let 의 경우 선언 후, let 떼고 이름 = 값; 적는 것 가능.
+  // 그러나 let 같은 이름 = 다른값; 선언 불가.
+  // 재개시키는 함수 만들 때 timeoutId를 다시 선언해야 하기 때문에 let으로 선언.
 
   const pause = () => clearTimeout(timeoutId);
   // 실행할 코드가 하나 뿐이면 {} 안써도 된다. 카운터 일시정지 함수.
@@ -15,6 +17,7 @@ function StopWatch() {
     timeoutId = setTimeout(() => setNum(num + 1), 1000);
   };
   // 카운터를 재개시키는 함수. let timeoutId 과 15번 줄의 timeoutId 는 같은 것.
+  // 6번 줄에서 let으로 선언했기 때문에 let 없이 timeoutId만 넣어줘도 오류생기지 않음.
 
   return (
     <>
