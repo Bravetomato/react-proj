@@ -16,6 +16,22 @@ function NumberCounter() {
       // 거짓일 때 실행
     );
 
+  // const noIs8MultipleDiv =
+  //   no % 8 == 0 ? (
+  //     <>
+  //       <span>8의 배수입니다.</span>
+  //     </>
+  //   ) : (
+  //     <></>
+  //   );
+
+  //위 삼항연산자를 이런식으로도 표현할 수 있다.
+  const noIs8MultipleDiv = no % 8 == 0 && (
+    <>
+      <span>8의 배수입니다.</span>
+    </>
+  );
+
   return (
     <>
       숫자 : {no}
@@ -23,6 +39,7 @@ function NumberCounter() {
       <button onClick={() => setNo(no + 1)}>증가</button>
       <hr />
       {noIsEvenDiv}
+      {noIs8MultipleDiv}
     </>
   );
 }
