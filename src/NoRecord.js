@@ -1,6 +1,14 @@
 import React, { useState } from "react";
 
 function NoRecord() {
+  // 배열 렌더링
+  const [arr, setArr] = useState([1, 2, 3, 4, 5]);
+
+  setTimeout(() => {
+    setArr([...arr, arr.length + 1]);
+  }, 1000);
+  // 1초마다 배열의 길이에 +1 된다.
+
   const [no, setNo] = useState(10);
   //   숫자 카운팅을 위한 숫자. 맨처음 no에는 10이 세팅된다.
   const [recordNo, setRecordNo] = useState(0);
@@ -13,7 +21,8 @@ function NoRecord() {
 
   return (
     <>
-      <h1>숫자기록</h1>
+      {arr.join(",")};{/* , 기준으로 +1 증가한 배열값이 기록된다*/}
+      {/* <h1>숫자기록</h1>
       <input
         type="number"
         value={no}
@@ -30,7 +39,7 @@ function NoRecord() {
         기록
       </button>
       <hr />
-      기록된 숫자 : {recordNo}
+      기록된 숫자 : {recordNo} */}
     </>
   );
 }
