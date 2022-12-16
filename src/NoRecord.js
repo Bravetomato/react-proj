@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 
 function NoRecord() {
-  const [no, setNo] = useState(0);
-  //   숫자 카운팅을 위한 숫자. no에는 0이 세팅된다.
+  const [no, setNo] = useState(10);
+  //   숫자 카운팅을 위한 숫자. 맨처음 no에는 10이 세팅된다.
   const [recordNo, setRecordNo] = useState(0);
   // 숫자 기록을 위한 숫자
 
