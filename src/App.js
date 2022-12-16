@@ -10,7 +10,8 @@ function App() {
       {/* <StopWatch /> */}
       {/* <NumberCounter /> */}
       {/* <Popup /> */}
-      <ProdList />
+      <ProdList className="container mx-auto" />
+      {/* container 사용으로 화면 크기 상관없이 여백 보장-> prodlist에서 설정해줘야함*/}
     </>
   );
 }
