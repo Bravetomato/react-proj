@@ -1,16 +1,19 @@
 import React, { useState } from "react";
 
 function NoRecord() {
-  // 기록된 숫자가 배열로 쌓이도록 만들기
+  // 기록된 숫자가 배열로 쌓이도록 만들기-2
 
   const [no, setNo] = useState(0);
   // 카운팅되는 숫자
 
-  const [recordedNos, setRecordedNos] = useState([]);
+  const [recordedNos, setRecordedNos] = useState([10, 20, 30]);
   //   카운팅 숫자 기록을 배열로 남긴다. useState([])-> 배열이 들어간다는 의미
   const saveNo = () => {
     setRecordedNos([...recordedNos, no]);
   };
+
+  const li = recordedNos.map((el, index) => <li key={index}>▷{el}</li>);
+  // 기록된 숫자 v2의 {li}에 들어가는 함수
 
   return (
     <>
@@ -30,8 +33,27 @@ function NoRecord() {
       >
         기록
       </button>
-      <hr />
-      기록된 숫자 : [{recordedNos.join(",")}]
+
+      <br />
+
+      <h1>기록된 숫자 v1: [{recordedNos.join(",")}]</h1>
+
+      <br />
+
+      <h1>
+        기록된 숫자 v2: <ul>{li}</ul>
+      </h1>
+
+      <br />
+
+      <h1>
+        기록된 숫자 v2-1:
+        <ul>
+          {recordedNos.map((el, index) => (
+            <li key={index}>▷{el}</li>
+          ))}
+        </ul>
+      </h1>
     </>
   );
 }
