@@ -47,6 +47,9 @@ function FormEx() {
           name="name"
           type="text"
           placeholder="이름을 입력해주세요"
+          // 입력창에 기본으로 이름을 입력해주세요 떠있도록
+          autoComplete="off"
+          // autoComplete="off" : 자동완성 끄기
         ></input>
         <br />
         <input
@@ -54,7 +57,7 @@ function FormEx() {
           type="number"
           placeholder="나이를 입력해주세요"
           defaultValue={20}
-          // 나이 입력창에 기본으로 20 이 써있도록 설정
+          // 나이 입력창에 기본으로 20 설정
         ></input>
         <br />
         <input type="submit" value="전송" />
