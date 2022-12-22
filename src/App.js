@@ -5,12 +5,14 @@ import ProdList from "./ProdList";
 import NoRecord from "./NoRecord";
 import FormEx from "./FormEx";
 import RefEx from "./RefEx";
+import RefUpdateEx from "./RefUpdateEx";
 import "./App.css";
 
 function App() {
   return (
     <>
-      <RefEx />
+      {/* <RefEx /> */}
+      <RefUpdateEx />
     </>
   );
 }
