@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 
 
 function RefEx() {
-  const [recordedNos, setRecordedNos] = useState([5, 10, 15, 5, 20, 25, 5, 30]);
+  const [recordedNos, setRecordedNos] = useState([5, 10, 15, 5, 20, 25, 5, 30, 35, 40]);
 
   const saveNo = (form) => {
     form.no.value = form.no.value.trim();
@@ -13,7 +13,7 @@ function RefEx() {
       return;
     }
 
-    setRecordedNos([...recordedNos, form.no.value]);
+    setRecordedNos([...recordedNos, form.no.value]); 
     form.no.value = '';
     form.no.focus();
   };
@@ -22,26 +22,14 @@ function RefEx() {
   // key 는 절대 겹치지 않는 유니크한 값.
   const li = recordedNos.map((el, index) => <li key={index}>{el}</li>);
 
-// 5를 지우는 함수
-  const removeNo5 = () => {
-    const newRecordedNos = recordedNos.filter((el) => el != 5 );
+
+  // 특정 index 지정해 삭제
+  const removeNo = (index) => {
+    const newRecordedNos = recordedNos.filter((_, _index) => _index != index);
     setRecordedNos(newRecordedNos);
   };
 
-// 처음 숫자를 지우는 함수
-  const removeFirst = () => {
-    const newRecordedNos = recordedNos.filter((el, index) => index != 0 );
-    // 인덱스 순서가 0이 아닌 것을 남긴다
-    setRecordedNos(newRecordedNos);
-  };
 
-// 마지막 숫자를 지우는 함수
-  const removeLast = () => {
-    const newRecordedNos = recordedNos.filter((_, index) => index != recordedNos.length -1);
-    // recordedNos.length -1 : 마지막 숫자를 특정할 수 없기 때문에 배열 길이에서 -1 번째가 마지막 숫자가 된다.
-    // recordedNos.length -1 가 아닌 것을 남긴다.
-    setRecordedNos(newRecordedNos);
-  };
 
   return (
     <>
@@ -64,11 +52,15 @@ function RefEx() {
       {recordedNos.join(",")}
 
       <hr />
-        <button onClick={removeNo5}>숫자 5 삭제</button>
+        <button onClick={() => removeNo(0)}> index 0 삭제 </button>
+        <hr />  
+        <button onClick={() => removeNo(3)}> index 3 삭제 </button>
+        <hr />
+        <button onClick={() => removeNo(5)}> index 5 삭제 </button>
+        <hr />
+        <button onClick={() => removeNo(7)}> index 7 삭제 </button>
       <hr />
-        <button onClick={removeFirst}>처음 숫자 삭제</button>
-      <hr />
-        <button onClick={removeLast}>마지막 숫자 삭제</button>
+
 
     </>
   );
