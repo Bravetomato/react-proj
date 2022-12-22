@@ -65,16 +65,4 @@ function RefEx() {
   );
 }
 
-
-// function RefEx() {
-//   const index = 4;
-//   const arr = [10, 20, 30, 40, 50];
-//   const newArr = arr.filter((el, _index) => _index != index);
-//   // 인덱스 번호 3이 아닌 것들만 필터로 걸러서 리스트를 만들겠다.
-//   return (
-//     <>{arr.join(",")}</>
-//   );
-// }
-
-
 export default RefEx;

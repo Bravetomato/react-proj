@@ -1,81 +1,18 @@
 import React, { useState, useRef } from "react";
 
+
+// index를 지정해 값 수정하기
 function RefUpdateEx() {
-  let AppCallCount = 0;
+    const index = 1;
+    const newValue = 1000;
+    const arr = [10, 20, 30];
+    const newArr = arr.map((el, _index) => (_index == index ? newValue : el));
+    // _는 앞의 index와 겹치기 때문에 붙여준 것. 
+    //  const index의 값이 arr의 1번째 index와 다르면 newValue 즉, 1000 으로 바꾸고, 같다면 그대로 둔다(el)).
 
-  const noInputRef = useRef(null);
-  const [no, setNo] = useState("");
-
-  const [recordedNos, setRecordedNos] = useState([
-    5,
-    10,
-    15,
-    20,
-    5,
-    25,
-    5,
-    30,
-    5
-  ]);
-
-  const saveNo = () => {
-    if (no === "") {
-      alert("숫자를 입력해주세요.");
-      return;
-    }
-
-    setRecordedNos([...recordedNos, no]);
-    setNo("");
-    noInputRef.current.focus();
-  };
-  
-  const removeNo = (index) => {
-    const newRecordedNos = recordedNos.filter((_, _index) => _index != index);
-    setRecordedNos(newRecordedNos);
-  };
-
-  const modifyNo = (index, newNo) => {
-    const newRecordedNos = recordedNos.map((el, _index) => _index == index ? newNo : el);
-    setRecordedNos(newRecordedNos);
-  }
-
-
-  return (
-    <>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          saveNo();
-        }}
-      >
-        <input
-          type="number"
-          ref={noInputRef}
-          value={no}
-          onChange={(e) => setNo(e.target.valueAsNumber)}
-        />
-        <button type="submit">기록</button>
-      </form>
-
-      <hr />
-
-      <h1>기록된 숫자</h1>
-      <ul>
-        {recordedNos.map((el, index) => (
-          <li key={index}>
-            <span style={{width:70,display:'inline-block'}}>{el}</span>
-            <span style={{width:70,display:'inline-block'}}>{index}</span>
-            <button onClick={() => removeNo(index)}>삭제</button>
-            <button onClick={() => modifyNo(index, el + 1)}>+1</button>
-            <button onClick={() => modifyNo(index, el - 1)}>-1</button>
-            <button onClick={() => modifyNo(index, el * 2)}>*2</button>
-          </li>
-        ))}
-      </ul>
-    </>
+    return (
+      <>{newArr.join(",")}</>
   );
 }
-
-
 
 export default RefUpdateEx;
