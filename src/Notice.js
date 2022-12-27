@@ -3,14 +3,12 @@ import React, { useState } from "react";
 import classnames from "https://cdn.skypack.dev/classnames";
 // cdnjs의 react ver. 알림창의 애니메이션을 위해 import.
 
-let NotifyOnce_workDone = false;
-// 알림창이 나타났다가 사라지는 동작을 수행하기 위해 변할 수 있는 전역변수를 선언해준다.
-// 함수 바깥에 선언해야 함수가 끝났을 때 초기화 되지 않는다.
+// 전역변수가 아닌 useState를 통해 구현하기
 
 function NotifyOnce({ children }) {
   const [visible, setVisible] = useState(false);
-
-  if (NotifyOnce_workDone == false) {
+  const [workDone, setworkDone] = useState(false);
+  if (workDone == false) {
     setTimeout(function () {
       setVisible(true);
     }, 1000);
@@ -19,7 +17,7 @@ function NotifyOnce({ children }) {
       setVisible(false);
     }, 3000);
 
-    NotifyOnce_workDone = true;
+    setworkDone(true);
   }
 
   return (
