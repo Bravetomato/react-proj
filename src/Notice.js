@@ -8,7 +8,7 @@ import classnames from "https://cdn.skypack.dev/classnames";
 function NotifyOnce({ children }) {
   const [visible, setVisible] = useState(false);
   const [workDone, setworkDone] = useState(false);
-  if (workDone == false) {
+  if (workDone === false) {
     setTimeout(function () {
       setVisible(true);
     }, 1000);
