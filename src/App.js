@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 
 import "./App.css";
-// 입력한 숫자들 중 소수의 갯수를 구하는 코드-useMemo 사용
+// 입력한 숫자들 중 소수의 갯수를 구하는 코드
 
 function isPrimeNumber(no) {
   for (let i = 2; i < no; i++) {
@@ -33,56 +33,48 @@ function getPrimeNumbersCount(max) {
   return getPrimeNumbers(max).length;
 }
 
+// 1~max사이 존재하는 소수 개수 구하기-Reactmemo
+function PrimeNosCount({ max }) {
+  // 1. useEffect로 최적화
+  // const [count, setCount] = useState(0);
+
+  // useEffect(() => {
+  //   const count = getPrimeNumbersCount(max);
+  //   setCount(count);
+  // }, [max]);
+  // 위에서 선언한 count에 소수갯수를 넣고, [max] 값이 변할 때만 실행한다.
+
+  // 2. useMemo로 최적화
+  const count = useMemo(() => getPrimeNumbersCount(max), [max]);
+  // getPrimeNumbersCount(max) : 직전 값
+  // [max] :  새로운 값
+
+  return (
+    <div style={{ border: "10px solid blue", padding: 100 }}>
+      1 ~ {max}사이에 존재하는 소수의 개수는 : {count}
+    </div>
+  );
+}
+
 let AppCallCount = 0;
 
 function App() {
   AppCallCount++;
   console.log(`AppCallCount : ${AppCallCount}`);
 
-  const [inputedNo, setInputedNo] = useState(0);
   const [no, setNo] = useState(0);
-
-  const primeNumbersCount = useMemo(
-    () => getPrimeNumbersCount(inputedNo),
-    [inputedNo]
-  );
-  // 함수의 형태를 만든 후 usaMemo로 감싸준다.
-  // getPrimeNumbersCount(inputedNo) : 직전의 값
-  // [inputedNo] : 새로 들어온 값
-  // 직전의 값을 기억해서 새로 들어온 값과 기억해서 비교 후 빠르게 처리하는 함수.
-  // 모든 값을 다 기억하는 것이 아니다.
-
-  const onSubmit = (e) => {
-    e.preventDefault();
-
-    const form = e.target;
-
-    form.number.value = form.number.value.trim();
-
-    if (form.number.value.length == 0) {
-      alert("숫자를 입력해주세요");
-      form.number.focus();
-      return;
-    }
-
-    const number = form.number.valueAsNumber;
-
-    form.number.focus();
-
-    setInputedNo(number);
-  };
 
   return (
     <>
-      <form onSubmit={onSubmit}>
-        <button onClick={() => setNo(no + 1)}>번호 : {no}</button>
-        <hr />
-        <input type="number" name="number" placeholder="숫자를 입력해주세요" />
-        <input type="submit" value="확인" />
-        <hr />
-        <div>MAX : {inputedNo}</div>
-        <div>소수의 개수 : {primeNumbersCount}</div>
-      </form>
+      <PrimeNosCount max={100} />
+      <hr />
+      <PrimeNosCount max={200} />
+      <hr />
+      <PrimeNosCount max={300} />
+      <hr />
+      <PrimeNosCount max={1000000} />
+      <hr />
+      <button onClick={() => setNo(no + 1)}>버튼 : {no}</button>
     </>
   );
 }
