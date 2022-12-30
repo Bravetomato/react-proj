@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import "./App.css";
-// 입력한 숫자들 중 소수의 갯수를 구하는 코드-useState 사용
+// 입력한 숫자들 중 소수의 갯수를 구하는 코드-useEffect 사용
 
 function isPrimeNumber(no) {
   for (let i = 2; i < no; i++) {
@@ -38,14 +38,22 @@ let AppCallCount = 0;
 function App() {
   AppCallCount++;
   console.log(`AppCallCount : ${AppCallCount}`);
+  // App 함수가 몇번 불렸는지 확인하기 위한 코드
+
   const [inputedNo, setInputedNo] = useState(0);
   // inputedNo : 입력창에 입력되는 숫자
+  const [no, setNo] = useState(0);
+  const [primeNumbersCount, setPrimeNumbersCount] = useState(0);
 
-  const primeNumbersCount = getPrimeNumbersCount(inputedNo);
-  // 입력창에 들어간 숫자에 대한 소수의 개수
+  useEffect(() => {
+    const primeNumbersCount = getPrimeNumbersCount(inputedNo);
+    setPrimeNumbersCount(primeNumbersCount);
+  }, [inputedNo]);
+  // [inputedNo] 값이 변경될 때만 실행됨.
 
   const onSubmit = (e) => {
     e.preventDefault();
+    // e의 발생을 막는 함수
 
     const form = e.target;
 
@@ -68,6 +76,8 @@ function App() {
   return (
     <>
       <form onSubmit={onSubmit}>
+        <button onClick={() => setNo(no + 1)}>번호 : {no}</button>
+        <hr />
         <input type="number" name="number" placeholder="숫자를 입력해주세요" />
         <input type="submit" value="확인" />
         <hr />
