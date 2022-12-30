@@ -1,40 +1,70 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 
 import "./App.css";
-// 제이쿼리 다크모드 코드를 리액트 문법으로 바꾸기
-function App() {
-  const [isDark, setIsDark] = useState(false);
-  // 기본상태는 false임.
+// 입력한 숫자들 중 소수의 갯수를 구하는 코드-useState 사용
 
-  //js문법을 적어야하는 경우 useEffect에 넣어주는 것이 좋다
-  useEffect(() => {
-    const html = document.getElementsByTagName("html")[0];
-    // document에서 tagname이 html인 el를 가져온다.
-    // 만약 isDark면 html의 classList에 dark를 추가하고 아니면, dark를 삭제한다.
-    // [isDark] -> isDark 값이 변할 때만 실행된다.
-    if (isDark) {
-      html.classList.add("dark");
-    } else {
-      html.classList.remove("dark");
+function isPrimeNumber(no) {
+  for (let i = 2; i < no; i++) {
+    if (i * i > no) {
+      break;
     }
-  }, [isDark]);
+
+    if (no % i === 0) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function getPrimeNumbers(max) {
+  const primeNumbers = [];
+
+  for (let i = 2; i <= max; i++) {
+    if (isPrimeNumber(i)) {
+      primeNumbers.push(i);
+    }
+  }
+
+  return primeNumbers;
+}
+
+function getPrimeNumbersCount(max) {
+  return getPrimeNumbers(max).length;
+}
+
+function App() {
+  const [primeNumbersCount, setPrimeNumbersCount] = useState(0);
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+
+    const form = e.target;
+
+    form.number.value = form.number.value.trim();
+
+    if (form.number.value.length == 0) {
+      alert("숫자를 입력해주세요");
+      form.number.focus();
+      return;
+    }
+
+    const number = form.number.valueAsNumber;
+    //form.number.valueAsNumber : number값이 숫자로 입력되도록
+    form.number.focus();
+
+    const primeNumbersCount = getPrimeNumbersCount(number);
+    setPrimeNumbersCount(primeNumbersCount);
+  };
 
   return (
     <>
-      <div>
-        <button className="btn-toggle-theme" onClick={() => setIsDark(!isDark)}>
-          테마토글
-        </button>
-      </div>
-      {/* 클릭하면 setIsDark는 isDark가 아니다.  */}
-      <div>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis
-        tempore similique quaerat, rerum sunt alias repellat aliquid! Nesciunt
-        fugit maiores quia obcaecati sed! A veniam eos earum porro eaque
-        commodi?
-      </div>
-
-      <h1 className="color-primary">하하 호호</h1>
+      <form onSubmit={onSubmit}>
+        <input type="number" name="number" placeholder="숫자를 입력해주세요" />
+        <input type="submit" value="확인" />
+        <hr />
+        <div>소수의 개수 : {primeNumbersCount}</div>
+      </form>
     </>
   );
 }
