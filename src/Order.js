@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 
 import "./App.css";
 
 // 음식 주문하기.
 function Order() {
+  // 메인의 수량
+  const [mainFoodCount, setMainFoodCount] = useState(1);
 
   const options = [
     "콜라 1.5", 
@@ -28,7 +30,11 @@ const toggleOptionCheck = (index) => {
 
  // 전체선택
  // optionCheckeds 의 모든(every) el를 살펴본다.
-  const btnAllChecked = optionCheckeds.every((el) => el);
+  const btnAllChecked = useMemo(() => optionCheckeds.every((el) => el), [optionCheckeds]);
+ // optionCheckeds 에서 필터에서 선택된(.filter) el의 개수(.length) 구하기.
+  const selectedCount = useMemo(() => optionCheckeds.filter((el) => el).length, [optionCheckeds]);
+  // useMemo로 최적화 -> 메인 수량의 useState 값이 재랜더링되기 때문에 최적화 해줌.
+ //  메인 수량이 바뀌는 것과 옵션이 바뀌는 것, 전체 선택은 상관이 없기 때문에 optionCheckeds이 바뀔 때만 랜더링 하겠다는 의미.
 
 // 전체선택 체크하면 모든 옵션에 체크 되도록
   const toggleAllChecked = () => {
@@ -46,12 +52,18 @@ const toggleOptionCheck = (index) => {
   return (
     <>
     <h1>음식 주문</h1>
-    <h2>옵션</h2>
+    <h2>메인 ( 수량 : {mainFoodCount} )</h2>
+    <div>
+      <button onClick={() => setMainFoodCount(mainFoodCount + 1)}>증가</button>
+      <button onClick={() => setMainFoodCount(mainFoodCount == 1 ? 1 : mainFoodCount-1)}>감소</button>
+    </div>
+     {/* selectedCount 에는 선택된 옵션 개수 / options.length 옵션 총 개수 */}
+     <hr />
+    <h2>옵션 ({selectedCount} / {options.length})</h2>
      {/* optionCheckeds 의 모든(every) el를 살펴 본후 삼항연산자를 통해 참이면 체크, 거짓이면 빈칸  */}
-    <span onClicked={toggleAllChecked}
-          style={{usetSelect: "none", cursor: "pointer"}}
+    <span style={{userSelect: "none", cursor: "pointer"}} 
+          onClick={toggleAllChecked}
           >{btnAllChecked ? "[ v ]" : "[  ]"}전체선택</span>
-    <hr />
     <ul>
       {/* map을 이용해 option 선택 하기. true에 v 표시가 생긴다. */}
       {/* onClick={() => toggleOptionCheck(index)  클릭시 toggleOptionCheck(index) 실행*/}
