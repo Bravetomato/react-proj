@@ -1,80 +1,46 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 
 import "./App.css";
-// 입력한 숫자들 중 소수의 갯수를 구하는 코드
 
-function isPrimeNumber(no) {
-  for (let i = 2; i < no; i++) {
-    if (i * i > no) {
-      break;
-    }
-
-    if (no % i === 0) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-function getPrimeNumbers(max) {
-  const primeNumbers = [];
-
-  for (let i = 2; i <= max; i++) {
-    if (isPrimeNumber(i)) {
-      primeNumbers.push(i);
-    }
-  }
-
-  return primeNumbers;
-}
-
-function getPrimeNumbersCount(max) {
-  return getPrimeNumbers(max).length;
-}
-
-// 1~max사이 존재하는 소수 개수 구하기-Reactmemo
-function PrimeNosCount({ max }) {
-  // 1. useEffect로 최적화
-  // const [count, setCount] = useState(0);
-
-  // useEffect(() => {
-  //   const count = getPrimeNumbersCount(max);
-  //   setCount(count);
-  // }, [max]);
-  // 위에서 선언한 count에 소수갯수를 넣고, [max] 값이 변할 때만 실행한다.
-
-  // 2. useMemo로 최적화
-  const count = useMemo(() => getPrimeNumbersCount(max), [max]);
-  // getPrimeNumbersCount(max) : 직전 값
-  // [max] :  새로운 값
+let SubCallCount = 0;
+function Sub({no1, no2, calculateFunc}) {
+  SubCallCount++;
+  console.log(`SubCallCount : ${SubCallCount}번 실행됨!`);
 
   return (
-    <div style={{ border: "10px solid blue", padding: 100 }}>
-      1 ~ {max}사이에 존재하는 소수의 개수는 : {count}
-    </div>
+    <>
+      <div style={{border: "3px solid red"}}>입력 : {no1}, {no2}</div>
+      <br/>
+      결과{calculateFunc(no1, no2)}
+    </>
   );
 }
 
 let AppCallCount = 0;
 
+const MemorisedSub = React.memo(Sub);
+
 function App() {
   AppCallCount++;
-  console.log(`AppCallCount : ${AppCallCount}`);
+  console.log(`AppCallCount : ${AppCallCount}번 실행됨!`);
 
-  const [no, setNo] = useState(0);
+  const [no1, setNo1] = useState(0);
+  const [no2, setNo2] = useState(0);
+
+  // const calculateFunc = (a, b) => a + b;
+
+  // useCallback
+  // [] : 최초 한번만 리랜더링.
+  const calculateFunc = useCallback((a, b) => a + b + no1, [no1]);
 
   return (
     <>
-      <PrimeNosCount max={100} />
+      <div>안녕하세요</div>
+      <button onClick={() => setNo1(no1 + 1)}>버튼1 : {no1}</button>
       <hr />
-      <PrimeNosCount max={200} />
+      <button onClick={() => setNo2(no2 + 1)}>버튼2 : {no2}</button>
       <hr />
-      <PrimeNosCount max={300} />
-      <hr />
-      <PrimeNosCount max={1000000} />
-      <hr />
-      <button onClick={() => setNo(no + 1)}>버튼 : {no}</button>
+      <MemorisedSub no1 = {10} no2 = {20} calculateFunc={calculateFunc} />
     </>
   );
 }
