@@ -2,38 +2,28 @@ import React, { useState } from "react";
 
 import  "./App.css";
 
+//라디오박스 다루기
 function App() {
-  const fruits = ["사과", "배", "바나나"];
+  const ageBands = ["영유아,아동", "10대", "20대", "30대", "40대", "50대", "60대", "그 외"];
 
-  const [selecteds, setSelecteds] = useState(new Array(fruits.length).fill(true));
-  // new Array를 fruits의 길이만큼 true로 채우겠다. 
-
-  const toggleFruitSeleced = (index) => {
-    const newSelecteds = selecteds.map((el, _index) => _index == index ? !el : el);
-    setSelecteds(newSelecteds);
-  };
-  // 선택 상태가 true 인지 false 인지
-  const selectedFruits = selecteds.map((el, index) => (el ? fruits[index] : el)).filter((el)=> el);
-  // 선택된 과일의 이름이 무엇인지
+  const [selectedAgeBand, setSelectedAgeBand] = useState(ageBands[0]);
+// default : ageBands 배열의 [0] 값, 즉 영유아, 아동으로 설정. 
 
   return (
     <>
-    <ul>
-      {fruits.map((fruit, index) => (
-        <li kep={index}>
-          <lable>
-            <input checked={selecteds[index]} type="checkbox" onChange={() => toggleFruitSeleced(index)}/> 
-            {fruit}
-          </lable>
-        </li>
+    {ageBands.map((ageBand) => (
+      <lable>
+        <input name="ageBand" type="radio" 
+        onChange={(e) =>setSelectedAgeBand(ageBand)} 
+        // 연령을 선택하는 이벤트가 발생
+        checked={ageBand == selectedAgeBand}/>
+        {/* 배열에 주어진 연령과 현재 선택된 연령이 같을 경우 라디오박스에 체크된다. */}
+        {ageBand}
+      </lable>    
       ))}
-    </ul>
-    <hr />
-    <div>
-      선택상태 : {selecteds.join(",")}
       <hr />
-      선택된 과일 : {selectedFruits.join(",")}
-    </div>
+      <div>현재 값 : {selectedAgeBand}</div>
+      {/* 현재 선택된 값은 selectedAgeBand로 보여준다 */}
     </>
   );
 }
