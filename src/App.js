@@ -2,9 +2,20 @@ import React, { useState, useRef } from "react";
 
 import "./App.css";
 
-// 상위, 하위 컴포넌트로 나누기
-function TodoApp({onBtnAddTodoClick, onBtnRemoveTodoClick, onBtnModifyTodoClick, todos}) {
+// UI 컴포넌트와 밀접한 것들은 UI 컴포넌트로 이동
+// onBtn~TodoClick 끼리 묶어둠
+function TodoApp({addTodo, removeTodo, modifyTodo, todos}) {
+  const onBtnAddTodoClick = () => {
+    addTodo("Hello");
+  };
 
+  const onBtnRemoveTodoClick = () => {
+    removeTodo(1);
+  };
+
+  const onBtnModifyTodoClick = () => {
+    modifyTodo(1, "lol");
+  };
   return(
   <>
    <button onClick={onBtnAddTodoClick}>Add</button>
@@ -50,23 +61,10 @@ function App() {
     setTodos(newTodos);
   };
 
-    const onBtnAddTodoClick = () => {
-      addTodo("Hello");
-    };
-
-    const onBtnRemoveTodoClick = () => {
-      removeTodo(1);
-    };
-
-    const onBtnModifyTodoClick = () => {
-      modifyTodo(1, "lol");
-    };
- 
   return(
   <>
   <TodoApp
-  onBtnAddTodoClick={onBtnAddTodoClick} onBtnRemoveTodoClick={onBtnRemoveTodoClick}
-  onBtnModifyTodoClick={onBtnModifyTodoClick} todos={todos} />
+  addTodo={addTodo} removeTodo={removeTodo} modifyTodo={modifyTodo} todos={todos} />
   </>
   );
 }
