@@ -2,8 +2,7 @@ import React, { useState, useRef } from "react";
 
 import "./App.css";
 
-// crud 
-// 객체를 추가하기-useRef 로 id +1 하기
+// crud : remove-> filter를 사용한다.
 function App() {
   const [todos, setTodos] = useState([]);
   const lastTodoIdRef = useRef(0);
@@ -23,14 +22,27 @@ function App() {
     setTodos(newTodos);
   };
 
+  const removeTodo = (index) => {
+    const newTodos = todos.filter((_, _index) => _index != index);
+    // todos의 index를 확인하여 기존 index와 선택된 index가 다를 때 거른다. 
+    // 다른 index 삭제, 같은 index 남김. 
+    setTodos(newTodos);
+  }
+
     const onBtnAddTodoClick = () => {
       addTodo("Hello");
+    };
+
+    const onBtnRemoveTodoClick = () => {
+      removeTodo(1);
     };
  
   return(
   <>
    <button onClick={onBtnAddTodoClick}>Add</button>
-   {/* 클릭시 onBtnAddTodoClick 가 실행됨.  */}
+    {/* 클릭시 onBtnAddTodoClick 가 실행됨.  */}
+   <button onClick={onBtnRemoveTodoClick}>Remove</button>
+
    <hr />
    <ul>
      {todos.map((todo, index) => (
