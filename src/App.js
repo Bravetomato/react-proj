@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 
 import "./App.css";
 
-// crud : remove-> filter를 사용한다.
+// crud : update. 수정
 function App() {
   const [todos, setTodos] = useState([]);
   const lastTodoIdRef = useRef(0);
@@ -20,14 +20,19 @@ function App() {
 
     const newTodos = [...todos, newTodo];
     setTodos(newTodos);
-  };
+  }; 
 
   const removeTodo = (index) => {
     const newTodos = todos.filter((_, _index) => _index != index);
     // todos의 index를 확인하여 기존 index와 선택된 index가 다를 때 거른다. 
     // 다른 index 삭제, 같은 index 남김. 
     setTodos(newTodos);
-  }
+  };
+
+  const modifyTodo = (index, newContent) => {
+    const newTodos = todos.map((todo, _index) => _index != index ? todos : {...todo, content: newContent});
+    setTodos(newTodos);
+  };
 
     const onBtnAddTodoClick = () => {
       addTodo("Hello");
@@ -36,21 +41,22 @@ function App() {
     const onBtnRemoveTodoClick = () => {
       removeTodo(1);
     };
+
+    const onBtnModifyTodoClick = () => {
+      modifyTodo(1, "lol");
+    };
  
   return(
   <>
    <button onClick={onBtnAddTodoClick}>Add</button>
-    {/* 클릭시 onBtnAddTodoClick 가 실행됨.  */}
    <button onClick={onBtnRemoveTodoClick}>Remove</button>
+   <button onClick={onBtnModifyTodoClick}>Modify</button>
 
    <hr />
    <ul>
      {todos.map((todo, index) => (
       <li key={index}>
         {todo.id} {todo.content} {todo.regDate}
-        {/* key 는 유니크한 값을 받는다 -> index */}
-        {/* todo : 위에 만들어 놓은 객체 */}
-        {/* 각각 객체의 id, content, regDate */}
       </li>
      ))}
    </ul>
