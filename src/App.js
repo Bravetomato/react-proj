@@ -2,8 +2,10 @@ import React, { useState, useRef } from "react";
 
 import "./App.css";
 
-// 커스텀훅 만들기
-function TodoApp({addTodo, removeTodo, modifyTodo, todos}) {
+// 커스텀상태 구조 분해하지 않고 바로 자식에게 넘기기
+function TodoApp({todosState}) {
+  const {addTodo, removeTodo, modifyTodo, todos} = todosState;
+
   const onBtnAddTodoClick = () => {
     addTodo("Hello");
   };
@@ -69,13 +71,12 @@ function useTodosState() {
 
 
 function App() {
-  // useState 처럼 선언
-  const {addTodo, removeTodo, modifyTodo, todos} = useTodosState();
+  const todosState = useTodosState();
 
   return(
   <>
   <TodoApp
-  addTodo={addTodo} removeTodo={removeTodo} modifyTodo={modifyTodo} todos={todos} />
+  todosState={todosState} />
   </>
   );
 }
