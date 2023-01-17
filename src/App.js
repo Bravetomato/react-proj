@@ -2,52 +2,52 @@ import React, { useState } from "react";
 
 import "./App.css";
 
-// crud : 삭제, 수정
+// crud 
+// 객체를 추가하기
 function App() {
   const [todos, setTodos] = useState([]);
+  const [lastTodoId, setLastTodoId] = useState(0);
 
-  const addTodo = (newTodo) => {
-    const newTodos = [...todos, todos.length + 1];
+  const addTodo = (newContent) => {
+    const id = lastTodoId + 1;
+    setLastTodoId(id);
+  // id 값 1씩 증가시키기
+  // addTodo는 newContent에 Hello를 받는다. 
+  // id 값을 1씩 증가시키기 위해 useState로 lastTodoId, setLastTodoId 를 선언하고,
+  // const id 를 만들어  
+
+    const newTodo = {
+      id : 1,
+      content: newContent,
+      regDate: "2023-01-17 12:12:12"
+    };
+  // newTodo라는 객체를 만들고, 안에 id, content, regDate 값을 넣었다. 
+
+    const newTodos = [...todos, newTodo];
+    // ...todos : 이미 보여진 할일, 
     setTodos(newTodos);
   };
 
-  const removeTodo = (index) => {
-    const newTodos = todos.filter((_, _index) => _index != index);
-    setTodos(newTodos);
-  }
-  // 할일 삭제
-  // filter를 통해 선택된 인덱스와 기존 인덱스가 다르다면 남긴다.
-  // 즉 선택된 인덱스는 삭제 된다.
-  
-  const modifyTodo = (index, newTodo) => {
-    const newTodos = todos.map((todos, _index) => 
-      _index != index ? todos : newTodo
-    ); 
-    setTodos(newTodos);
-  };
-  // 할일 수정(편집)
-  // map을 통해 할일을 보여준다. 
-  // 선택된 인덱스와 기존 인덱스가 같다면 새로운 할일을 보여준다
-  // 아니면 기존 할일을 보여준다. 
-
-  const onAddBtnClick = () => {
-    addTodo(todos.length + 1);
-  };
-
-  const onRemoveBtnClick = () => {
-    removeTodo(1);
-  };
-
-  const onEditBtnClick = () => {
-    modifyTodo(1, "Hello");
-  }
-
+    const onBtnAddTodoClick = () => {
+      addTodo("Hello");
+      // AddTodo는 Hello를 받는데, AddTodo를 선언해줘야함.
+    };
+ 
   return(
   <>
-   <div>{JSON.stringjfy(todos)}</div>
-   <button onClick={onAddBtnClick}>Add</button>
-   <button onClick={onRemoveBtnClick}>Remove</button>
-   <button onClick={onEditBtnClick}>Edit</button>
+   <button onClick={onBtnAddTodoClick}>Add</button>
+   {/* 클릭시 onBtnAddTodoClick 가 실행됨.  */}
+   <hr />
+   <ul>
+     {todos.map((todo, index) => (
+      <li key={index}>
+        {todo.id} {todo.content} {todo.regDate}
+        {/* key 는 유니크한 값을 받는다 -> index */}
+        {/* todo : 위에 만들어 놓은 객체 */}
+        {/* 각각 객체의 id, content, regDate */}
+      </li>
+     ))}
+   </ul>
   </>
   );
 }
