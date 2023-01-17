@@ -14,17 +14,18 @@ function App() {
   // id 값 1씩 증가시키기
   // addTodo는 newContent에 Hello를 받는다. 
   // id 값을 1씩 증가시키기 위해 useState로 lastTodoId, setLastTodoId 를 선언하고,
-  // const id 를 만들어  
+  // const id 를 만들어 setLastTodoId() 에 id를 받는다.
 
     const newTodo = {
-      id : 1,
+      id,
+  //  id 값 1씩 증가시키기 위해 비워둠. 
       content: newContent,
       regDate: "2023-01-17 12:12:12"
     };
   // newTodo라는 객체를 만들고, 안에 id, content, regDate 값을 넣었다. 
 
     const newTodos = [...todos, newTodo];
-    // ...todos : 이미 보여진 할일, 
+    // ...todos : 이미 보여진 할일, newTodo : 새로운 할일.
     setTodos(newTodos);
   };
 
