@@ -2,20 +2,18 @@ import React, { useState, useRef } from "react";
 
 import "./App.css";
 
-// 커스텀상태 구조 분해하지 않고 바로 자식에게 넘기기
+// 자식이 커스텀상태 구조 분해하지 않고 바로 사용
 function TodoApp({todosState}) {
-  const {addTodo, removeTodo, modifyTodo, todos} = todosState;
-
   const onBtnAddTodoClick = () => {
-    addTodo("Hello");
+    todosState.addTodo("Hello");
   };
 
   const onBtnRemoveTodoClick = () => {
-    removeTodo(1);
+    todosState.removeTodo(1);
   };
 
   const onBtnModifyTodoClick = () => {
-    modifyTodo(1, "lol");
+    todosState.modifyTodo(1, "lol");
   };
   return(
   <>
@@ -25,7 +23,7 @@ function TodoApp({todosState}) {
 
    <hr />
    <ul>
-     {todos.map((todo, index) => (
+     {todosState.todos.map((todo, index) => (
       <li key={index}>
         {todo.id} {todo.content} {todo.regDate}
       </li>
