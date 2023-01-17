@@ -2,8 +2,7 @@ import React, { useState, useRef } from "react";
 
 import "./App.css";
 
-// UI 컴포넌트와 밀접한 것들은 UI 컴포넌트로 이동
-// onBtn~TodoClick 끼리 묶어둠
+// 커스텀훅 만들기
 function TodoApp({addTodo, removeTodo, modifyTodo, todos}) {
   const onBtnAddTodoClick = () => {
     addTodo("Hello");
@@ -34,7 +33,8 @@ function TodoApp({addTodo, removeTodo, modifyTodo, todos}) {
   );
 }
 
-function App() {
+// 커스텀 훅
+function useTodosState() {
   const [todos, setTodos] = useState([]);
   const lastTodoIdRef = useRef(0);
 
@@ -60,6 +60,17 @@ function App() {
     const newTodos = todos.filter((_, _index) => _index != index);
     setTodos(newTodos);
   };
+
+  // return 으로 addTodo, removeTodo, modifyTodo, todos 받음.
+  return {
+    addTodo, removeTodo, modifyTodo, todos
+  }
+}
+
+
+function App() {
+  // useState 처럼 선언
+  const {addTodo, removeTodo, modifyTodo, todos} = useTodosState();
 
   return(
   <>
