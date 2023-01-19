@@ -2,57 +2,126 @@ import React, { useState, useRef } from "react";
 
 import "./App.css";
 
-// 할일 입력 form 만들기 
-function NewTodoForm({todosState}) {
+function TodoListItem({ todosState, todo, index }) {
+  const [editMode, setEditMode] = useState(false);
+  const [editedContent, setEditedContent] = useState(todo.content);
+  const editedContentInputRef = useRef(null);
+
+  const removeTodo = () => {
+    todosState.removeTodo(index);
+  };
+
+  const showEdit = () => {
+    setEditMode(true);
+  };
+
+  const commitEdit = () => {
+    if (editedContent.trim().length == 0) {
+      alert("할일을 입력해주세요.");
+      editedContentInputRef.current.focus();
+      return;
+    }
+
+    todosState.modifyTodo(index, editedContent.trim());
+
+    setEditMode(false);
+  };
+
+  const cancelEdit = () => {
+    setEditMode(false);
+    setEditedContent(todo.content);
+  };
+
+  return (
+    <li>
+      {todo.id}
+      &nbsp;
+      {todo.regDate}
+      &nbsp;
+      {editMode || (
+        <>
+          {todo.content}
+          &nbsp;
+          <button onClick={showEdit}>수정</button>
+        </>
+      )}
+      {editMode && (
+        <>
+          <input
+            ref={editedContentInputRef}
+            type="text"
+            placeholder="할일을 입력해주세요."
+            value={editedContent}
+            onChange={(e) => setEditedContent(e.target.value)}
+          />
+          &nbsp;
+          <button onClick={commitEdit}>수정완료</button>
+          &nbsp;
+          <button onClick={cancelEdit}>수정취소</button>
+        </>
+      )}
+      &nbsp;
+      <button onClick={removeTodo}>삭제</button>
+    </li>
+  );
+}
+
+function TodoList({ todosState }) {
+  return (
+    <ul>
+      {todosState.todos.map((todo, index) => (
+        <TodoListItem
+          todosState={todosState}
+          key={todo.id}
+          todo={todo}
+          index={index}
+        />
+      ))}
+    </ul>
+  );
+}
+
+function NewTodoForm({ todosState }) {
   const onSubmit = (e) => {
     e.preventDefault();
 
     const form = e.target;
 
-    // 입력값 양 옆 여백 동일하게 주기.
     form.content.value = form.content.value.trim();
 
-    // 입력값이 없을 때 경고창 띄우기.
-    if( form.content.value.length === 0) {
-      alert("write your todo");
+    if (form.content.value.length == 0) {
+      alert("할일을 입력해주세요.");
       form.content.focus();
-      // 커서 위치
+
       return;
     }
 
-    // 입력값이 있다면 
-    // 입력 후 '' 즉 빈칸으로 만들어 주고
-    // 커서 위치
     todosState.addTodo(form.content.value);
-    form.content.value = '';
+    form.content.value = "";
     form.content.focus();
-  }
+  };
 
-  return(
-  <form onSubmit={onSubmit}>
-    <input name="content" type="text" placeholder="write your todo" autoComplete="off" />
-    <input type="submit" value="Add" />
-    <input type="reset" value="delete" />
-    {/* type="submit" : button 과 같다 */}
-    {/* type="reset" : 취소 버튼 */}
-  </form>
- );
+  return (
+    <form onSubmit={onSubmit}>
+      <input
+        autoComplete="off"
+        name="content"
+        type="text"
+        placeholder="할일을 입력해주세요."
+      />
+      <input type="submit" value="추가" />
+      <input type="reset" value="취소" />
+    </form>
+  );
 }
 
-function TodoApp({todosState}) {
-  return(
-  <>
-  {/* NewTodoForm 을 받아준다. */}
-  <NewTodoForm todosState={todosState} />
-   <hr />
-   <ul>
-     {todosState.todos.map((todo, index) => (
-      <li key={index}>
-        {todo.id} {todo.content} {todo.regDate}
-      </li>
-     ))}
-   </ul>
-  </>
+function TodoApp({ todosState }) {
+  return (
+    <>
+      <NewTodoForm todosState={todosState} />
+      <hr />
+      <TodoList todosState={todosState} />
+    </>
   );
 }
 
@@ -66,36 +135,63 @@ function useTodosState() {
     const newTodo = {
       id,
       content: newContent,
-      regDate: "2023-01-17 12:12:12"
+      regDate: dateToStr(new Date())
     };
 
     const newTodos = [...todos, newTodo];
     setTodos(newTodos);
-  }; 
+  };
 
   const modifyTodo = (index, newContent) => {
-    const newTodos = todos.map((todo, _index) => _index !== index ? todos : {...todo, content: newContent });
+    const newTodos = todos.map((todo, _index) =>
+      _index != index ? todo : { ...todo, content: newContent }
+    );
     setTodos(newTodos);
   };
 
   const removeTodo = (index) => {
-    const newTodos = todos.filter((_, _index) => _index !== index);
+    const newTodos = todos.filter((_, _index) => _index != index);
     setTodos(newTodos);
   };
 
   return {
-    addTodo, removeTodo, modifyTodo, todos
-  }
+    todos,
+    addTodo,
+    modifyTodo,
+    removeTodo
+  };
 }
 
 function App() {
   const todosState = useTodosState();
 
-  return(
-  <>
-  <TodoApp
-  todosState={todosState} />
-  </>
+  return (
+    <>
+      <TodoApp todosState={todosState} />
+    </>
+  );
+}
+
+// 유틸리티
+
+// 날짜 객체 입력받아서 문장(yyyy-mm-dd hh:mm:ss)으로 반환한다.
+function dateToStr(d) {
+  const pad = (n) => {
+    return n < 10 ? "0" + n : n;
+  };
+
+  return (
+    d.getFullYear() +
+    "-" +
+    pad(d.getMonth() + 1) +
+    "-" +
+    pad(d.getDate()) +
+    " " +
+    pad(d.getHours()) +
+    ":" +
+    pad(d.getMinutes()) +
+    ":" +
+    pad(d.getSeconds())
   );
 }
 
