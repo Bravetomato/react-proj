@@ -13,7 +13,7 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
     },
     palette: {
       primary: {
-        main: "#ff8686",
+        main: "#12db47",
         contrastText: "#ffffff"
       }
     }
