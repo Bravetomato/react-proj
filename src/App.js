@@ -100,7 +100,7 @@ function App() {
                 <Chip label={todo.regDate} variant="outlined" className="!pt-1" color="primary" />
               </div>
               <div className="flex shadow mt-4 round">
-                <Button className="bg-red-500 flex-shrink-0 !items-start !rounded-[20px_0_0_20px]">
+                <Button className="flex-shrink-0 !items-start !rounded-[20px_0_0_20px]">
                   <span className="text-3x1 text-[#c23ae8] ">
                   {/* text-3x1 : icon 크기 설정. */}
                   {/* text-[#c23ae8] : icon 색 설정*/}
@@ -117,11 +117,12 @@ function App() {
                     {/* <i class="fa-solid fa-check" /> : 폰트어썸에서 체크 아이콘 복사, <FontAwesomeIcon icon="fa-solid fa-check" /> 를 <i class=~>로 수정적용*/}
                     </span>
                 </Button>
-              <div className="flex-shrink-0 w-[2px] bg-[#91e9f2] my-5 mr-1"></div>
-              <div className="mt-1 p-10 flex-grow whitespace-pre-wrap leading-normal mt-1 flex itmes-center">
+              {/* divider : 체크표시와 할일 사이의 세로선 */}
+              <div className="flex-shrink-0 w-[2px] bg-[#1da836] my-5 mr-1"></div>
+              <div className="mt-1 p-10 flex-grow whitespace-pre-wrap leading-relaxed mt-1 flex itmes-center">
               {todo.content}</div>
-                <Button className="bg-blue-500 w-[150px] flex-shrink-0 !items-start !rounded-[0_20px_20px_0]">
-                  <span className="text-3x1 text-[#91e9f2]">
+                <Button className="w-[150px] flex-shrink-0 !items-start !rounded-[0_20px_20px_0]">
+                  <span className="text-3x1 text-[#97ad36]">
                   <i class="fa-solid fa-bars" />
                   </span>
                 </Button>
