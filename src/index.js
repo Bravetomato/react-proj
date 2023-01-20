@@ -4,6 +4,7 @@ import "./index.css";
 import App from "./App.js";
 import { ThemeProvider, CssBaseline, createTheme } from '@mui/material';
 
+
 // mui 사용하기
 const root = ReactDOM.createRoot(document.getElementById("root"));
   // Create a theme instance.

@@ -43,12 +43,10 @@ function App() {
   const todosState = useTodosState();
 
   useEffect(() => {
-    todosState.addTodo("운동 데드리프트 유산소 스트레칭");
+    todosState.addTodo("운동\n데드리프트\n유산소\n스트레칭");
     todosState.addTodo("요리");
     todosState.addTodo("공부");
   }, []);
-  // useEffect 사용해 addTodo에 운동, 요리, 공부를 추가함.
-  // [] : 빈배열을 넣어 운동, 요리, 공부가 한번씩만 나타나도록. 빈배열 쓰지않으면 무한대로 나타남.
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -80,18 +78,15 @@ function App() {
       </AppBar>
       <Toolbar/>
       <form onSubmit={onSubmit} className="flex flex-col mt-4 px-4 gap-2">
-        {/* mt-4 : margin 4. px-4 : padding 4 */}
+        {/* mt-4 : margin top 4. px-4 : padding 4 */}
       <TextField
         minRows={3}
         maxRows={10}
         multiline
-        // multiline : enter 입력시 입력창 줄바꿈
-        // minRows : 최소 줄. maxRows : 최대 줄. {}안에 숫자를 넣어준다.
         autoComplete="off"
         name="content"
         type="text"
         label="할일을 입력해주세요." 
-        // label : placeholder의 역할
         variant="outlined"
       />
       <Button type="submit" variant="contained">Add</Button>
@@ -105,14 +100,17 @@ function App() {
                 {/* ! : 앞에 느낌표를 사용하면 우선순위로 적용된다.*/}
                 <Chip label={todo.regDate} variant="outlined" className="!pt-1" color="primary" />
               </div>
-              <div className="mt-a p-10 shadow rounded-[20px]" whitespace-pre-wrap leading-normal>
-              <Box
-                sx={{
-                width: 300,
-                height: 300,
-                backgroundColor: 'primary.dark',
-                }} 
-              > {todo.content} </Box></div>
+              <div className="flex shadow mt-4 round">
+                <Button className="bg-red-500 flex-shrink-0 !items-start !rounded-[20px_0_0_20px]">
+                {/* items-start : checked 라는 글자를 상단에 위치시키기 위해서*/}
+                {/* rounded-[20px_0_0_20px] : 모서리 둥글게. 시계방향대로 4군데. _를 사용해 각 모서리 구분. */}
+                {/* ! : 우선순위로 적용시키기 위해 사용*/}
+                  <span>checked</span>
+                </Button>
+              <div className="bg-pink-500 mt-a p-10 flex-grow whitespace-pre-wrap leading-normal">
+              {todo.content}</div>
+                <div className="bg-blue-500 w-[150px] flex-shrink-0">after</div>
+              </div>
               {/* whitespace-pre-wrap : 자동 줄바꿈. 공백을 코드에 있는 그대로 표시.*/}
               {/* leading-normal : 행간 정렬*/}
             </li>
