@@ -2,7 +2,31 @@ import React, { useState, useRef } from "react";
 
 import "./App.css";
 
-// 날짜 입력 기능 추가
+// 입력된 할일을 보여주는 코드를 Todolist 과 TodoItem으로 나누기
+// <ul> 부분이 list. <li> 부분이 item
+
+function TodoListItem({todo, index}) {
+  return(
+   <li key={index}>
+    {todo.id} {todo.regDate} {todo.content}
+    </li>
+ );
+}
+
+function TodoList({todosState}) {
+  return(
+  <ul>
+    {todosState.todos.map((todo, index) => (
+    // <li key={index}>
+    // {todo.id} {dateToStr(todo.regDate)} {todo.content}
+    // </li>
+    // 위의 li들을 TodolistItems로 다시 한번 분리해준다
+      <TodoListItem key={todo.id} todo={todo} index={index}/>
+     ))}
+  </ul>
+ );
+}
+
 function NewTodoForm({todosState}) {
   const onSubmit = (e) => {
     e.preventDefault();
@@ -37,14 +61,16 @@ function TodoApp({ todosState }) {
     <>
       <NewTodoForm todosState={todosState} />
       <hr />
-      <ul>
+      {/* 아래는 입력된 할일 리스트를 보여주는 부분 */}
+      {/* 이 부분을 나누어 보도록 한다 */}
+      {/* <ul>
         {todosState.todos.map((todo, index) => (
           <li key={index}>
             {todo.id} {dateToStr(todo.regDate)} {todo.content}
-            {/* 유틸리티 dateToStr 의 todo에서 regDate 값을 보여줌*/}
           </li>
         ))}
-      </ul>
+      </ul> */}
+      <TodoList todosState={todosState}/>
     </>
   );
 }
