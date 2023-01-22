@@ -15,3 +15,18 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* 스크롤바 생성 */
+:root {
+  overflow-y:overlay;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(60, 241, 142, 0.3);
+  border-radius: 0;
+}
+
+::-webkit-scrollbar {
+  width: 15px;
+  height: 10px;
+}
