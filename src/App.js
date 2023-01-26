@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
-import { Button, AppBar, Toolbar, TextField, ThemeProvider, CssBaseline, createTheme, Chip, SwipeableDrawer } from '@mui/material/';
+import { Button, AppBar, Toolbar, TextField, ThemeProvider, CssBaseline, 
+  createTheme, Chip, SwipeableDrawer, List, ListItem, ListItemButton, } from '@mui/material/';
 import { ClassNames } from "@emotion/react";
 
-// 모바일을 위한 swipableDrawer로 교체
-// SwipeableDrawer 를 import 후 기존 drawer를 SwipeableDrawer로 고쳐주면 된다. 
+// Drawer 내용 넣기 -list 사용. 
+// list, listitem 먼저 import하기.
+// ListItem 에 버튼을 만들고자 할 때, button 은 곧 사라질 기능이기에 ListItemButton 을 사용하도록 한다. 
 function useTodosState() {
   const [todos, setTodos] = useState([]);
   const lastTodoIdRef = useRef(0);
@@ -124,7 +126,7 @@ function useTodoOptionDrawerState() {
   }; 
 }
 
-//function Todolist 에 있던 drawer를 컴포넌트로 따로 분리. 
+//list로 drawer 내용 넣기. 
 function TodoOptionDrawer({ state }) {
   return(
     <>
@@ -133,7 +135,14 @@ function TodoOptionDrawer({ state }) {
        onOpen={() => {}}
        open={state.opened} 
        onClose={state.closed}>
-        <div className="p-10">{state.todoId}번 Option Drawer</div>
+        <List className="!py-0">
+          <ListItem className="!pt-5 !p-5">
+            <span className="text-[#97ad36]">{state.todoId}번</span> 
+            <span>&nbsp;</span>
+            <span>Option Drawer</span></ListItem>
+          <ListItemButton className="!pt-5 !p-5">수정</ListItemButton>
+          <ListItemButton className="!pt-5 !p-5">삭제</ListItemButton>
+        </List>
       </SwipeableDrawer>
       </>
       );
