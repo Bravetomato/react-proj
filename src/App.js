@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
-import { Button, AppBar, Toolbar, TextField, ThemeProvider, CssBaseline, createTheme, Chip, Drawer } from '@mui/material/';
+import { Button, AppBar, Toolbar, TextField, ThemeProvider, CssBaseline, createTheme, Chip, SwipeableDrawer } from '@mui/material/';
 import { ClassNames } from "@emotion/react";
 
-//drawer 기능 커스텀 훅 만들기 및 TodoOptionDrawer 컴포넌트 만들기
+// 모바일을 위한 swipableDrawer로 교체
+// SwipeableDrawer 를 import 후 기존 drawer를 SwipeableDrawer로 고쳐주면 된다. 
 function useTodosState() {
   const [todos, setTodos] = useState([]);
   const lastTodoIdRef = useRef(0);
@@ -127,12 +128,13 @@ function useTodoOptionDrawerState() {
 function TodoOptionDrawer({ state }) {
   return(
     <>
-      <Drawer 
+      <SwipeableDrawer 
        anchor={"bottom"} 
+       onOpen={() => {}}
        open={state.opened} 
-       onClose={state.close}>
+       onClose={state.closed}>
         <div className="p-10">{state.todoId}번 Option Drawer</div>
-      </Drawer>
+      </SwipeableDrawer>
       </>
       );
 }
@@ -154,7 +156,6 @@ function TodoList({ todosState }){
   </>
  );
 }
-
 
 function App() {
   const todosState = useTodosState();
