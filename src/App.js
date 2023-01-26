@@ -3,9 +3,7 @@ import { Button, AppBar, Toolbar, TextField, ThemeProvider, CssBaseline,
   createTheme, Chip, SwipeableDrawer, List, ListItem, ListItemButton, } from '@mui/material/';
 import { ClassNames } from "@emotion/react";
 
-// Drawer 내용 넣기 -list 사용. 
-// list, listitem 먼저 import하기.
-// ListItem 에 버튼을 만들고자 할 때, button 은 곧 사라질 기능이기에 ListItemButton 을 사용하도록 한다. 
+// Drawer 수정, 삭제 아이콘 넣기-폰트어썸 사용.
 function useTodosState() {
   const [todos, setTodos] = useState([]);
   const lastTodoIdRef = useRef(0);
@@ -140,8 +138,12 @@ function TodoOptionDrawer({ state }) {
             <span className="text-[#97ad36]">{state.todoId}번</span> 
             <span>&nbsp;</span>
             <span>Option Drawer</span></ListItem>
-          <ListItemButton className="!pt-5 !p-5">수정</ListItemButton>
-          <ListItemButton className="!pt-5 !p-5">삭제</ListItemButton>
+          <ListItemButton className="!pt-5 !p-5 !items-baseline">
+            <i className="fa-regular fa-pen-to-square" />
+            &nbsp;<span>수정</span></ListItemButton>
+          <ListItemButton className="!pt-5 !p-5 !items-baseline">
+            <i className="fa-solid fa-trash" />
+            &nbsp;<span>삭제</span></ListItemButton>
         </List>
       </SwipeableDrawer>
       </>
