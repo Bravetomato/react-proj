@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Button, AppBar, Toolbar, TextField, ThemeProvider, CssBaseline, createTheme, Chip, Drawer } from '@mui/material/';
 import { ClassNames } from "@emotion/react";
 
-//컴포넌트 나누기
+//option 클릭하면 drawer 나오도록
 function useTodosState() {
   const [todos, setTodos] = useState([]);
   const lastTodoIdRef = useRef(0);
@@ -77,7 +77,7 @@ function NewTodoForm({ todosState }) {
   </>);
 }
 
-function TodoListItem({ todo }) {
+function TodoListItem({ todo, setOptionDrawerTodoId }) {
   return(
   <>
   <li key={todo.id} className="mt-10">
@@ -94,7 +94,10 @@ function TodoListItem({ todo }) {
               <div className="flex-shrink-0 w-[2px] bg-[#1da836] my-5 mr-1"></div>
               <div className="mt-1 p-10 flex-grow whitespace-pre-wrap leading-relaxed mt-1 flex itmes-center">
               {todo.content}</div>
-                <Button className="w-[150px] flex-shrink-0 !items-start !rounded-[0_20px_20px_0]">
+              {/* option 버튼: 클릭시 해당 번호 드로우 열림.  */}
+                <Button 
+                onClick={() => setOptionDrawerTodoId(todo.id)}
+                className="w-[150px] flex-shrink-0 !items-start !rounded-[0_20px_20px_0]">
                   <span className="text-3x1 text-[#97ad36]">
                   <i className="fa-solid fa-bars" />
                   </span>
@@ -106,16 +109,21 @@ function TodoListItem({ todo }) {
 }
 
 function TodoList({ todosState }){
-
+  const [optionDrawerTodoId, setOptionDrawerTodoId] = useState(null);
   return(
   <>
-        <Drawer anchor={"bottom"} open={false} onClose={() => {}}>
-        <div className="p-10">Option Drawer</div>
+      <Drawer 
+       anchor={"bottom"} 
+       open={optionDrawerTodoId !== null} 
+       onClose={() => {setOptionDrawerTodoId(null)}}>
+        <div className="p-10">{optionDrawerTodoId}번 Option Drawer</div>
       </Drawer>
+      {/* optionDrawerTodoId가 null이 아닐때는 drawer가 open
+      setOptionDrawerTodoId가 null일 때는 close  */}
       <div className="mt-4 px-4">
         <ul>
           {todosState.todos.map((todo) => (
-            <TodoListItem key={todo.id} todo={todo} />
+            <TodoListItem key={todo.id} todo={todo} setOptionDrawerTodoId={setOptionDrawerTodoId}/>
           ))}
         </ul>
       </div>
