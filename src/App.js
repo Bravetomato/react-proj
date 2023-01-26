@@ -1,130 +1,8 @@
-import React, { useState, useRef } from "react";
-import { Button } from '@mui/material';
+import React, { useState, useRef, useEffect } from "react";
+import { Button, AppBar, Toolbar, TextField, ThemeProvider, CssBaseline, createTheme, Chip, Drawer } from '@mui/material/';
+import { ClassNames } from "@emotion/react";
 
-import "./App.css";
-
-function TodoListItem({ todosState, todo, index }) {
-  const [editMode, setEditMode] = useState(false);
-  const [editedContent, setEditedContent] = useState(todo.content);
-  const editedContentInputRef = useRef(null);
-
-  const removeTodo = () => {
-    todosState.removeTodo(index);
-  };
-
-  const showTodo = () => {
-    setEditMode(true);
-  };
-
-  const commitEdit = () => {
-    if (editedContent.trim().length == 0) {
-      alert("Write your todo!");
-      editedContentInputRef.current.focus();
-      return;
-    }
-
-    todosState.modifyTodo(index, editedContent.trim());
-
-    setEditMode(false);
-  };
-
-  const cancelEdit = () => {
-    setEditMode(false);
-    setEditedContent(todo.content);
-  };
-
-  return (
-    <li>
-      {todo.id}
-      &nbsp;
-      {todo.regDate}
-      &nbsp;
-      {editMode || (
-        <>
-          {todo.content}
-          &nbsp;
-          <button onClick={showTodo}>Edit</button>
-        </>
-      )}
-      {editMode && (
-        <>
-          <input
-            type="text"
-            placeholder="Write your todo."
-            value={editedContent}
-            onChange={(e) => setEditedContent(e.target.value)}
-          />
-          &nbsp;
-          <button onClick={commitEdit}>Commit edit</button>
-          <button onClick={cancelEdit}>Cancle edit</button>
-        </>
-      )}
-      <button onClick={removeTodo}>Remove</button>
-    </li>
-  );
-}
-
-function TodoList({ todosState }) {
-  return (
-    <ul>
-      {todosState.todos.map((todo, index) => (
-        <TodoListItem
-          todosState={todosState}
-          key={todo.id}
-          todo={todo}
-          index={index}
-        />
-      ))}
-    </ul>
-  );
-}
-
-function NewTodoForm({ todosState }) {
-  const onSubmit = (e) => {
-    e.preventDefault();
-
-    const form = e.target;
-
-    form.content.value = form.content.value.trim();
-
-    if (form.content.value.length == 0) {
-      alert("Write your todo!");
-      form.content.focus();
-
-      return;
-    }
-
-    todosState.addTodo(form.content.value);
-    form.content.value = "";
-    form.content.focus();
-  };
-
-  return (
-    <>
-      <form onSubmit={onSubmit}>
-        <input
-          autoComplete="off"
-          name="content"
-          type="text"
-          placeholder="Write your todo."
-        />
-        <input type="submit" value="Add" />
-        <input type="reset" value="Reset" />
-      </form>
-    </>
-  );
-}
-
-function TodoApp({ todosState }) {
-  return (
-    <>
-      <NewTodoForm todosState={todosState} />
-      <hr />
-      <TodoList todosState={todosState} />
-    </>
-  );
-}
-
+//MUI Drawer
 function useTodosState() {
   const [todos, setTodos] = useState([]);
   const lastTodoIdRef = useRef(0);
@@ -135,11 +13,10 @@ function useTodosState() {
     const newTodo = {
       id,
       content: newContent,
-      regDate: dateToStr(new Date()),
+      regDate: dateToStr(new Date())
     };
 
-    const newTodos = [...todos, newTodo];
-    setTodos(newTodos);
+    setTodos((todos) => [newTodo, ...todos]);
   };
 
   const modifyTodo = (index, newContent) => {
@@ -157,24 +34,116 @@ function useTodosState() {
   return {
     todos,
     addTodo,
-    removeTodo,
     modifyTodo,
+    removeTodo
   };
 }
 
 function App() {
   const todosState = useTodosState();
 
+  useEffect(() => {
+    todosState.addTodo("운동\n데드리프트\n유산소\n스트레칭");
+    todosState.addTodo("요리");
+    todosState.addTodo("공부");
+  }, []);
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+  
+    const form = e.target;
+  
+    form.content.value = form.content.value.trim();
+  
+    if (form.content.value.length == 0) {
+      alert("할일을 입력해주세요.");
+      form.content.focus();
+  
+      return;
+    }
+  
+    todosState.addTodo(form.content.value);
+    form.content.value = "";
+    form.content.focus();
+  };
+
   return (
     <>
-      <TodoApp todosState={todosState} />
+    <AppBar position="fixed">
+        <Toolbar>
+          <div className="flex-1"></div>
+          <span className="font-bold">Todo list</span>
+          <div className="flex-1"></div>
+        </Toolbar>
+      <Toolbar/>
+      </AppBar>
+      <form onSubmit={onSubmit} className="flex flex-col mt-4 px-4 gap-2">
+        {/* mt-4 : margin top 4. px-4 : padding 4 */}
+      <TextField
+        minRows={3}
+        maxRows={10}
+        multiline
+        autoComplete="off"
+        name="content"
+        type="text"
+        label="할일을 입력해주세요." 
+        variant="outlined"
+      />
+      <Button type="submit" variant="contained">Add</Button>
+      </form>
+      {/* 드로어 부분: 아래에서 드로우되며, true-> 항상 열린다는 의미 */}
+      <Drawer
+            anchor={"bottom"}
+            open={true}
+            onClose={() => {}}
+          >
+            <div className="p-10">Option Drawer</div>
+      </Drawer>
+      <div className="mt-4 px-4">
+        <ul>
+          {todosState.todos.map((todo) => (
+            <li key={todo.id} className="mt-10">
+              <div className="flex gap-2">
+                <Chip label={`Number : ${todo.id}`} className="!pt-1"variant="outlined" />
+                <Chip label={todo.regDate} variant="outlined" className="!pt-1" color="primary" />
+              </div>
+              <div className="flex shadow mt-4 round">
+                <Button className="flex-shrink-0 !items-start !rounded-[20px_0_0_20px]">
+                  <span className="text-3x1 text-[#c23ae8] ">
+                  {/* text-3x1 : icon 크기 설정. */}
+                  {/* text-[#c23ae8] : icon 색 설정*/}
+                  {/* { 
+                  //   "text-[#ebdbb0]": index % 2 == 0,
+                  // 인덱스가 2로 나누어 떨어지면 text 색을 #ebdbb0 로 바꾼다
+                  // },
+                  // {
+                  //   "text-[#91e9f2]": index % 2 != 0,
+                  // 인덱스가 2로 나누어 떨어지지 않으면 text 색을 #91e9f2 로 바꾼다
+                  // }
+                  // )}> */}
+                    <i class="fa-solid fa-check" />
+                    {/* <i class="fa-solid fa-check" /> : 폰트어썸에서 체크 아이콘 복사, <FontAwesomeIcon icon="fa-solid fa-check" /> 를 <i class=~>로 수정적용*/}
+                    </span>
+                </Button>
+              {/* divider : 체크표시와 할일 사이의 세로선 */}
+              <div className="flex-shrink-0 w-[2px] bg-[#1da836] my-5 mr-1"></div>
+              <div className="mt-1 p-10 flex-grow whitespace-pre-wrap leading-relaxed mt-1 flex itmes-center">
+              {todo.content}</div>
+                <Button className="w-[150px] flex-shrink-0 !items-start !rounded-[0_20px_20px_0]">
+                  <span className="text-3x1 text-[#97ad36]">
+                  <i class="fa-solid fa-bars" />
+                  </span>
+                </Button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
     </>
   );
 }
 
 // 유틸리티
-
-// 날짜 객체 입력받아서 문장(yyyy-mm-dd hh:mm:ss)으로 반환한다.
 function dateToStr(d) {
   const pad = (n) => {
     return n < 10 ? "0" + n : n;
@@ -195,4 +164,24 @@ function dateToStr(d) {
   );
 }
 
+function ROOT() {
+// Create a theme instance.
+const theme = createTheme({
+  typography: {
+    fontFamily: ["GmarketSansMedium"]
+  },
+  palette: {
+    primary: {
+      main: "#ff8686",
+      contrastText: "#ffffff"
+    }
+  }
+});
+return (
+  <ThemeProvider theme={theme}>
+    <CssBaseline />
+    <App />
+  </ThemeProvider>
+ );
+}
 export default App;
