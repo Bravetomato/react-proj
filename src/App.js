@@ -1,8 +1,8 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import { Button, AppBar, Toolbar, TextField, ThemeProvider, CssBaseline, createTheme, Chip, Drawer } from '@mui/material/';
 import { ClassNames } from "@emotion/react";
 
-//option 클릭하면 drawer 나오도록
+//drawer 가독성 개선 및 useMemo로 최적화
 function useTodosState() {
   const [todos, setTodos] = useState([]);
   const lastTodoIdRef = useRef(0);
@@ -77,7 +77,7 @@ function NewTodoForm({ todosState }) {
   </>);
 }
 
-function TodoListItem({ todo, setOptionDrawerTodoId }) {
+function TodoListItem({ todo, openDrawer }) {
   return(
   <>
   <li key={todo.id} className="mt-10">
@@ -96,7 +96,7 @@ function TodoListItem({ todo, setOptionDrawerTodoId }) {
               {todo.content}</div>
               {/* option 버튼: 클릭시 해당 번호 드로우 열림.  */}
                 <Button 
-                onClick={() => setOptionDrawerTodoId(todo.id)}
+                onClick={() => openDrawer(todo.id)}
                 className="w-[150px] flex-shrink-0 !items-start !rounded-[0_20px_20px_0]">
                   <span className="text-3x1 text-[#97ad36]">
                   <i className="fa-solid fa-bars" />
@@ -110,12 +110,18 @@ function TodoListItem({ todo, setOptionDrawerTodoId }) {
 
 function TodoList({ todosState }){
   const [optionDrawerTodoId, setOptionDrawerTodoId] = useState(null);
+  // 각 코드의 기능을 나타내는 이름을 붙여 대입하면 가독성이 좋아진다.
+  const drawerOpened = useMemo(() => optionDrawerTodoId !== null, [optionDrawerTodoId]);
+  // useMemo 최적화: optionDrawerTodoId 가 바뀔때만 리렌더링 한다.
+  const drawerClosed = () => setOptionDrawerTodoId(null);
+  const openDrawer = (id) => setOptionDrawerTodoId(id);
+
   return(
   <>
       <Drawer 
        anchor={"bottom"} 
-       open={optionDrawerTodoId !== null} 
-       onClose={() => {setOptionDrawerTodoId(null)}}>
+       open={drawerOpened} 
+       onClose={drawerClosed}>
         <div className="p-10">{optionDrawerTodoId}번 Option Drawer</div>
       </Drawer>
       {/* optionDrawerTodoId가 null이 아닐때는 drawer가 open
@@ -123,7 +129,7 @@ function TodoList({ todosState }){
       <div className="mt-4 px-4">
         <ul>
           {todosState.todos.map((todo) => (
-            <TodoListItem key={todo.id} todo={todo} setOptionDrawerTodoId={setOptionDrawerTodoId}/>
+            <TodoListItem key={todo.id} todo={todo} setOptionDrawerTodoId={setOptionDrawerTodoId} openDrawer={openDrawer}/>
           ))}
         </ul>
       </div>
