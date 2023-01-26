@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useMemo } from "react";
 import { Button, AppBar, Toolbar, TextField, ThemeProvider, CssBaseline, createTheme, Chip, Drawer } from '@mui/material/';
 import { ClassNames } from "@emotion/react";
 
-//drawer 가독성 개선 및 useMemo로 최적화
+//drawer 기능 커스텀 훅 만들기 및 TodoOptionDrawer 컴포넌트 만들기
 function useTodosState() {
   const [todos, setTodos] = useState([]);
   const lastTodoIdRef = useRef(0);
@@ -94,7 +94,6 @@ function TodoListItem({ todo, openDrawer }) {
               <div className="flex-shrink-0 w-[2px] bg-[#1da836] my-5 mr-1"></div>
               <div className="mt-1 p-10 flex-grow whitespace-pre-wrap leading-relaxed mt-1 flex itmes-center">
               {todo.content}</div>
-              {/* option 버튼: 클릭시 해당 번호 드로우 열림.  */}
                 <Button 
                 onClick={() => openDrawer(todo.id)}
                 className="w-[150px] flex-shrink-0 !items-start !rounded-[0_20px_20px_0]">
@@ -108,28 +107,47 @@ function TodoListItem({ todo, openDrawer }) {
  );
 }
 
+// drawer 기능만 모은 커스텀 훅. 
+// 이름을 짧게 써줄 수 있어 가독성 좋음. 왜냐면 이 function안에는 drawer관련만 있기 때문.
+function useTodoOptionDrawerState() {
+  const [todoId, setTodoId] = useState(null);
+  const opened = useMemo(() => todoId !== null, [todoId]);
+  const closed = () => setTodoId(null);
+  const open = (id) => setTodoId(id);
+
+  return {
+    todoId,
+    opened,
+    closed,
+    open,
+  }; 
+}
+
+//function Todolist 에 있던 drawer를 컴포넌트로 따로 분리. 
+function TodoOptionDrawer({ state }) {
+  return(
+    <>
+      <Drawer 
+       anchor={"bottom"} 
+       open={state.opened} 
+       onClose={state.close}>
+        <div className="p-10">{state.todoId}번 Option Drawer</div>
+      </Drawer>
+      </>
+      );
+}
+
 function TodoList({ todosState }){
-  const [optionDrawerTodoId, setOptionDrawerTodoId] = useState(null);
-  // 각 코드의 기능을 나타내는 이름을 붙여 대입하면 가독성이 좋아진다.
-  const drawerOpened = useMemo(() => optionDrawerTodoId !== null, [optionDrawerTodoId]);
-  // useMemo 최적화: optionDrawerTodoId 가 바뀔때만 리렌더링 한다.
-  const drawerClosed = () => setOptionDrawerTodoId(null);
-  const openDrawer = (id) => setOptionDrawerTodoId(id);
+  const todoOptionDrawerState = useTodoOptionDrawerState();
 
   return(
   <>
-      <Drawer 
-       anchor={"bottom"} 
-       open={drawerOpened} 
-       onClose={drawerClosed}>
-        <div className="p-10">{optionDrawerTodoId}번 Option Drawer</div>
-      </Drawer>
-      {/* optionDrawerTodoId가 null이 아닐때는 drawer가 open
-      setOptionDrawerTodoId가 null일 때는 close  */}
+      <TodoOptionDrawer state={todoOptionDrawerState}/>
       <div className="mt-4 px-4">
         <ul>
           {todosState.todos.map((todo) => (
-            <TodoListItem key={todo.id} todo={todo} setOptionDrawerTodoId={setOptionDrawerTodoId} openDrawer={openDrawer}/>
+            <TodoListItem key={todo.id} todo={todo} 
+            openDrawer={todoOptionDrawerState.open}/>
           ))}
         </ul>
       </div>
