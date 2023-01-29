@@ -3,7 +3,7 @@ import { Button, AppBar, Toolbar, TextField, ThemeProvider, CssBaseline,
   createTheme, Chip, SwipeableDrawer, List, ListItem, ListItemButton, Modal, } from '@mui/material/';
 import { ClassNames } from "@emotion/react";
 
-// Drawer 수정 form 처리
+// Drawer 삭제 전 confirm
 function useTodosState() {
   const [todos, setTodos] = useState([]);
   const lastTodoIdRef = useRef(0);
@@ -44,9 +44,6 @@ function useTodosState() {
   };
 
   const removetodoById = (id) => {
-    // const index = todos.findeIdex((todo) => todo.id == id);
-    // 가 반복되기 때문에 const findTodoIndexById로 선언 후 
-    // const index = findTodoIndexById(id); 로 사용
     const index = findTodoIndexById(id);
     return removeTodo(index);
   }
@@ -56,9 +53,6 @@ function useTodosState() {
   }
 
   const findTodoById = (id) => {
-    // const index = todos.findeIdex((todo) => todo.id == id);
-    // 가 반복되기 때문에 const findTodoIndexById로 선언 후 
-    // const index = findTodoIndexById(id); 로 사용
     const index = findTodoIndexById(id);
 
     if ( index == -1) {
@@ -210,10 +204,6 @@ function EditTodoModal({ state, todo, todosState }) {
  );
 }
 
-// 드로우의 수정 모달창이 열릴 때 설정.
-// useatate 디폴트를 false 설정한 후(기본설정 모달창 닫힘), 
-// 모달창이 open 일때는 setOpened이 true일 때임.
-// 모달창이 close일때는 setOpened이 false일 때임.
 function useEditTodoMadalState() {
   const [opened, setOpened] = useState(false);
 
@@ -234,7 +224,15 @@ function useEditTodoMadalState() {
 
 function TodoOptionDrawer({ state, todosState }) {
   const editTodoMadalState = useEditTodoMadalState();
+  // 할일을 삭제하기 전에 물어보기.
+  // confirm 기능 활용 : aler처럼 창이 뜨는데 확인/취소 버튼이 있다.
+  // 확인은 true, 취소는 false.
+  // 리액트에서는 window.confirm 이라고 해야 함. 
   const removeTodo = () => {
+    if( window.confirm(`${state.todoId}번 할 일을 삭제하겠습니까?`) == false) {
+      return;
+    }
+
     todosState.removeTodoById(state.todoId);
     state.close();
   };
