@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect, useMemo } from "react";
 import { Button, AppBar, Toolbar, TextField, ThemeProvider, CssBaseline, 
-  createTheme, Chip, SwipeableDrawer, List, ListItem, ListItemButton, } from '@mui/material/';
+  createTheme, Chip, SwipeableDrawer, List, ListItem, ListItemButton, Modal, } from '@mui/material/';
 import { ClassNames } from "@emotion/react";
 
-// Drawer 수정 기능 구현.
+// Drawer 수장 기능 구현-모달
 function useTodosState() {
   const [todos, setTodos] = useState([]);
   const lastTodoIdRef = useRef(0);
@@ -132,8 +132,30 @@ function useTodoOptionDrawerState() {
   }; 
 }
 
-//list로 drawer 내용 넣기. 
+// 드로우의 수정 모달창이 열릴 때 설정.
+// useatate 디폴트를 false 설정한 후(기본설정 모달창 닫힘), 
+// 모달창이 open 일때는 setOpened이 true일 때임.
+// 모달창이 close일때는 setOpened이 false일 때임.
+function useEditTodoMadalState() {
+  const [opened, setOpened] = useState(false);
+
+  const open = () => {
+    setOpened(true);
+  }
+
+  const close = () => {
+    setOpened(false);
+  }
+
+  return {
+    opened,
+    open,
+    close
+  };
+}
+
 function TodoOptionDrawer({ state, todosState }) {
+  const editTodoMadalState = useEditTodoMadalState();
   const removeTodo = () => {
     todosState.removeTodoById(state.todoId);
     state.close();
@@ -152,14 +174,20 @@ function TodoOptionDrawer({ state, todosState }) {
             <span className="text-[#97ad36]">{state.todoId}번</span> 
             <span>&nbsp;</span>
             <span>Option Drawer</span></ListItem>
-          <ListItemButton className="!pt-5 !p-5 !items-baseline">
+          <ListItemButton className="!pt-5 !p-5 !items-baseline" onClick={editTodoMadalState.open}>
             <i className="fa-regular fa-pen-to-square" />
             &nbsp;<span>수정</span></ListItemButton>
-          <ListItemButton className="!pt-5 !p-5 !items-baseline onClick={removeTodo}">
+          <ListItemButton className="!pt-5 !p-5 !items-baseline" onClick={removeTodo}>
             <i className="fa-solid fa-trash" />
             &nbsp;<span>삭제</span></ListItemButton>
         </List>
       </SwipeableDrawer>
+      {/* 수정기능 구현-modal */}
+      <Modal open={editTodoMadalState.opened} 
+      onClose={editTodoMadalState.close} 
+      className="flex justify-center items-center">
+        <div className="bg-white p-10 rounded-[20px]">hello</div>
+      </Modal>
       </>
       );
 }
