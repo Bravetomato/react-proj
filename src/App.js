@@ -3,7 +3,7 @@ import { Button, AppBar, Toolbar, TextField, ThemeProvider, CssBaseline,
   createTheme, Chip, SwipeableDrawer, List, ListItem, ListItemButton, Modal, } from '@mui/material/';
 import { ClassNames } from "@emotion/react";
 
-// Drawer 삭제 전 confirm
+// Drawer 할일수정 취소되거나 완료되면 Drawer까지 종료
 function useTodosState() {
   const [todos, setTodos] = useState([]);
   const lastTodoIdRef = useRef(0);
@@ -27,8 +27,6 @@ function useTodosState() {
     setTodos(newTodos);
   };
 
-  // 인덱스가 -1 즉, 할일이 없다면 그대로 리턴하고
-  // -1이 아니라면 newContent 즉 수정된 할일로 바꿔준다.
   const modifyTodoById = (id, newContent) => {
     const index = findTodoIndexById(id);
 
@@ -157,7 +155,12 @@ function useTodoOptionDrawerState() {
 }
 
 // 드로우 수정 모달창 form
-function EditTodoModal({ state, todo, todosState }) {
+function EditTodoModal({ state, todo, todosState, closeDrawer }) {
+  const close = () => { 
+    state.close();
+    closeDrawer();
+  }
+
   const onSubmit = (e) => {
     e.preventDefault();
   
@@ -173,15 +176,14 @@ function EditTodoModal({ state, todo, todosState }) {
 
     // form에 새롭게 입력한 수정된 할일을 넘겨준다.
     todosState.modifyTodoById(todo.id, form.content.value);
-    // 수정 반영 후 모달창 닫기.
-    state.close();
+    close();
   };
 
   return (
   <>
         {/* 수정기능 구현-modal */}
    <Modal open={state.opened} 
-          onClose={state.close} 
+          onClose={close} 
           className="flex justify-center items-center">
         <div className="bg-white p-10 rounded-[20px]">
           <form onSubmit={onSubmit} className="flex flex-col mt-4 px-4 gap-2">
@@ -196,7 +198,6 @@ function EditTodoModal({ state, todo, todosState }) {
             variant="outlined"
             defaultValue={todo?.content}
           />
-          {/* defaultValue : 창에 기본적으로 적혀있는 텍스트.{todo?.content} 로 설정해 수정하고 싶은 할일이 뜨도록 한다. */}
       <Button type="submit" variant="contained">수정</Button>
       </form></div>
       </Modal>
@@ -230,6 +231,7 @@ function TodoOptionDrawer({ state, todosState }) {
   // 리액트에서는 window.confirm 이라고 해야 함. 
   const removeTodo = () => {
     if( window.confirm(`${state.todoId}번 할 일을 삭제하겠습니까?`) == false) {
+      state.close();
       return;
     }
 
@@ -240,7 +242,8 @@ function TodoOptionDrawer({ state, todosState }) {
 
   return(
     <>
-     <EditTodoModal state={editTodoMadalState} todo={todo} todosState={todosState}/>
+     <EditTodoModal state={editTodoMadalState} todo={todo} 
+     todosState={todosState} closeDrawer={state.close}/>
       <SwipeableDrawer 
        anchor={"bottom"} 
        onOpen={() => {}}
