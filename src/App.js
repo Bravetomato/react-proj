@@ -3,7 +3,7 @@ import { Button, AppBar, Toolbar, TextField, ThemeProvider, CssBaseline,
   createTheme, Chip, SwipeableDrawer, List, ListItem, ListItemButton, Modal, } from '@mui/material/';
 import { ClassNames } from "@emotion/react";
 
-// Drawer 수장 기능 구현-모달
+// Drawer 수정 모달 별도 컴포넌트로 분리
 function useTodosState() {
   const [todos, setTodos] = useState([]);
   const lastTodoIdRef = useRef(0);
@@ -32,8 +32,6 @@ function useTodosState() {
     setTodos(newTodos);
   };
 
-  // 드로우 삭제 기능 구현을 위해.
-  // 삭제할 id와 todo 의 id가 같으면 삭제.
   const removetodoById = (id) => {
     const index = todos.findeIdex((todo) => todo.id == id);
     return removeTodo(index);
@@ -117,7 +115,6 @@ function TodoListItem({ todo, index, openDrawer }) {
 }
 
 // drawer 기능만 모은 커스텀 훅. 
-// 이름을 짧게 써줄 수 있어 가독성 좋음. 왜냐면 이 function안에는 drawer관련만 있기 때문.
 function useTodoOptionDrawerState() {
   const [todoId, setTodoId] = useState(null);
   const opened = useMemo(() => todoId !== null, [todoId]);
@@ -130,6 +127,48 @@ function useTodoOptionDrawerState() {
     closed,
     open,
   }; 
+}
+
+// 드로우 수정 모달창 form
+function EditTodoModal({ state }) {
+  const onSubmit = (e) => {
+    e.preventDefault();
+  
+    const form = e.target;
+  
+    form.content.value = form.content.value.trim();
+  
+    if (form.content.value.length == 0) {
+      alert("수정된 할 일을 입력해주세요.");
+      form.content.focus();
+
+      return;
+    }
+  };
+
+  return (
+  <>
+        {/* 수정기능 구현-modal */}
+   <Modal open={state.opened} 
+          onClose={state.close} 
+          className="flex justify-center items-center">
+        <div className="bg-white p-10 rounded-[20px]">
+          <form onSubmit={onSubmit} className="flex flex-col mt-4 px-4 gap-2">
+           <TextField
+            minRows={3}
+            maxRows={10}
+            multiline
+            autoComplete="off"
+            name="content"
+            type="text"
+            label="할일을 입력해주세요." 
+            variant="outlined"
+          />
+      <Button type="submit" variant="contained">수정</Button>
+      </form></div>
+      </Modal>
+  </>
+ );
 }
 
 // 드로우의 수정 모달창이 열릴 때 설정.
@@ -159,11 +198,11 @@ function TodoOptionDrawer({ state, todosState }) {
   const removeTodo = () => {
     todosState.removeTodoById(state.todoId);
     state.close();
-    // state.close() : 드로우에서 삭제 실행 후 드로우 닫기.
   };
 
   return(
     <>
+     <EditTodoModal state={editTodoMadalState} />
       <SwipeableDrawer 
        anchor={"bottom"} 
        onOpen={() => {}}
@@ -182,12 +221,6 @@ function TodoOptionDrawer({ state, todosState }) {
             &nbsp;<span>삭제</span></ListItemButton>
         </List>
       </SwipeableDrawer>
-      {/* 수정기능 구현-modal */}
-      <Modal open={editTodoMadalState.opened} 
-      onClose={editTodoMadalState.close} 
-      className="flex justify-center items-center">
-        <div className="bg-white p-10 rounded-[20px]">hello</div>
-      </Modal>
       </>
       );
 }
