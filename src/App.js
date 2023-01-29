@@ -3,7 +3,7 @@ import { Button, AppBar, Toolbar, TextField, ThemeProvider, CssBaseline,
   createTheme, Chip, SwipeableDrawer, List, ListItem, ListItemButton, Modal, } from '@mui/material/';
 import { ClassNames } from "@emotion/react";
 
-// Drawer 수정 모달 별도 컴포넌트로 분리
+// Drawer 수정 form 처리
 function useTodosState() {
   const [todos, setTodos] = useState([]);
   const lastTodoIdRef = useRef(0);
@@ -27,14 +27,45 @@ function useTodosState() {
     setTodos(newTodos);
   };
 
+  // 인덱스가 -1 즉, 할일이 없다면 그대로 리턴하고
+  // -1이 아니라면 newContent 즉 수정된 할일로 바꿔준다.
+  const modifyTodoById = (id, newContent) => {
+    const index = findTodoIndexById(id);
+
+    if( index == -1 ) {
+      return;
+    }
+    modifyTodo(index, newContent);
+  }
+
   const removeTodo = (index) => {
     const newTodos = todos.filter((_, _index) => _index != index);
     setTodos(newTodos);
   };
 
   const removetodoById = (id) => {
-    const index = todos.findeIdex((todo) => todo.id == id);
+    // const index = todos.findeIdex((todo) => todo.id == id);
+    // 가 반복되기 때문에 const findTodoIndexById로 선언 후 
+    // const index = findTodoIndexById(id); 로 사용
+    const index = findTodoIndexById(id);
     return removeTodo(index);
+  }
+
+  const findTodoIndexById = (id) => {
+    return todos.findeIdex((todo) => todo.id == id);
+  }
+
+  const findTodoById = (id) => {
+    // const index = todos.findeIdex((todo) => todo.id == id);
+    // 가 반복되기 때문에 const findTodoIndexById로 선언 후 
+    // const index = findTodoIndexById(id); 로 사용
+    const index = findTodoIndexById(id);
+
+    if ( index == -1) {
+      return null;
+    }
+
+    return todos[index];
   }
 
   return {
@@ -43,6 +74,8 @@ function useTodosState() {
     modifyTodo,
     removeTodo,
     removetodoById,
+    findTodoById,
+    modifyTodoById,
   };
 }
 
@@ -130,7 +163,7 @@ function useTodoOptionDrawerState() {
 }
 
 // 드로우 수정 모달창 form
-function EditTodoModal({ state }) {
+function EditTodoModal({ state, todo, todosState }) {
   const onSubmit = (e) => {
     e.preventDefault();
   
@@ -141,9 +174,13 @@ function EditTodoModal({ state }) {
     if (form.content.value.length == 0) {
       alert("수정된 할 일을 입력해주세요.");
       form.content.focus();
-
       return;
     }
+
+    // form에 새롭게 입력한 수정된 할일을 넘겨준다.
+    todosState.modifyTodoById(todo.id, form.content.value);
+    // 수정 반영 후 모달창 닫기.
+    state.close();
   };
 
   return (
@@ -163,7 +200,9 @@ function EditTodoModal({ state }) {
             type="text"
             label="할일을 입력해주세요." 
             variant="outlined"
+            defaultValue={todo?.content}
           />
+          {/* defaultValue : 창에 기본적으로 적혀있는 텍스트.{todo?.content} 로 설정해 수정하고 싶은 할일이 뜨도록 한다. */}
       <Button type="submit" variant="contained">수정</Button>
       </form></div>
       </Modal>
@@ -199,10 +238,11 @@ function TodoOptionDrawer({ state, todosState }) {
     todosState.removeTodoById(state.todoId);
     state.close();
   };
+  const todo = todosState.findTodoById(state.todoId);
 
   return(
     <>
-     <EditTodoModal state={editTodoMadalState} />
+     <EditTodoModal state={editTodoMadalState} todo={todo} todosState={todosState}/>
       <SwipeableDrawer 
        anchor={"bottom"} 
        onOpen={() => {}}
