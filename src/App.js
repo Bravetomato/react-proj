@@ -3,7 +3,7 @@ import { Button, AppBar, Toolbar, TextField, ThemeProvider, CssBaseline,
   createTheme, Chip, SwipeableDrawer, List, ListItem, ListItemButton, } from '@mui/material/';
 import { ClassNames } from "@emotion/react";
 
-// Drawer 수정, 삭제 아이콘 넣기-폰트어썸 사용.
+// Drawer 수정 기능 구현.
 function useTodosState() {
   const [todos, setTodos] = useState([]);
   const lastTodoIdRef = useRef(0);
@@ -32,11 +32,19 @@ function useTodosState() {
     setTodos(newTodos);
   };
 
+  // 드로우 삭제 기능 구현을 위해.
+  // 삭제할 id와 todo 의 id가 같으면 삭제.
+  const removetodoById = (id) => {
+    const index = todos.findeIdex((todo) => todo.id == id);
+    return removeTodo(index);
+  }
+
   return {
     todos,
     addTodo,
     modifyTodo,
-    removeTodo
+    removeTodo,
+    removetodoById,
   };
 }
 
@@ -78,7 +86,7 @@ function NewTodoForm({ todosState }) {
   </>);
 }
 
-function TodoListItem({ todo, openDrawer }) {
+function TodoListItem({ todo, index, openDrawer }) {
   return(
   <>
   <li key={todo.id} className="mt-10">
@@ -125,7 +133,13 @@ function useTodoOptionDrawerState() {
 }
 
 //list로 drawer 내용 넣기. 
-function TodoOptionDrawer({ state }) {
+function TodoOptionDrawer({ state, todosState }) {
+  const removeTodo = () => {
+    todosState.removeTodoById(state.todoId);
+    state.close();
+    // state.close() : 드로우에서 삭제 실행 후 드로우 닫기.
+  };
+
   return(
     <>
       <SwipeableDrawer 
@@ -141,7 +155,7 @@ function TodoOptionDrawer({ state }) {
           <ListItemButton className="!pt-5 !p-5 !items-baseline">
             <i className="fa-regular fa-pen-to-square" />
             &nbsp;<span>수정</span></ListItemButton>
-          <ListItemButton className="!pt-5 !p-5 !items-baseline">
+          <ListItemButton className="!pt-5 !p-5 !items-baseline onClick={removeTodo}">
             <i className="fa-solid fa-trash" />
             &nbsp;<span>삭제</span></ListItemButton>
         </List>
@@ -155,11 +169,12 @@ function TodoList({ todosState }){
 
   return(
   <>
-      <TodoOptionDrawer state={todoOptionDrawerState}/>
+      <TodoOptionDrawer state={todoOptionDrawerState} todosState={todosState}/>
       <div className="mt-4 px-4">
         <ul>
-          {todosState.todos.map((todo) => (
-            <TodoListItem key={todo.id} todo={todo} 
+          {todosState.todos.map((todo, index) => (
+            <TodoListItem key={todo.id} todo={todo} index={index}
+            todosState={todosState}
             openDrawer={todoOptionDrawerState.open}/>
           ))}
         </ul>
