@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, } from "@mui/material";
 
-// 현재 page 하이라이트
+// 히스토리 이동 중 새 페이지로 이동 시 기존 기록의 일부 없애기.
 
 function HomePage() {
     return(
@@ -41,7 +41,13 @@ function useHistory() {
     //  red로 색으로 바꾸고 , 다르면 null
 
     const movePage = (url) => {
+        setCurrentIndex(0);
         setUrl(url);
+
+        const newHistoryUrls = historyUrls.filter(
+            (_, index) => index >= currentIndex
+        );
+
         setHistoryUrls([url, ...historyUrls]);
     };
 
