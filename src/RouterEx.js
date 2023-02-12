@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-// url 변화에 따라 page가 변화하도록.
+import { Button, } from "@mui/material";
+
+// url 변화에 따라 page가 변화하도록-디자인 추가
 
 function HomePage() {
     return(
@@ -30,14 +32,24 @@ export default function RouterEx() {
     // default 는 home 이기 때문에 처음에는 Homepage가 나타남. 
     return(
         <>
-         <div>
-            <span onClick={() => setUrl("home")} className="hover:text-red-300 cursor-pointer">Home</span>
-            <span onClick={() => setUrl("about")} className="hover:text-red-300 cursor-pointer">About</span>
-            <span onClick={() => setUrl("login")} className="hover:text-red-300 cursor-pointer">Login</span>
-         </div>
+        {/* 현재 url을 표시하기 위해 */}
+        <div className="p-5">현재 주소 : {url}</div>
+         <ul className="flex gap-3 p-5">
+            <li onClick={() => setUrl("home")} className="hover:text-red-300 cursor-pointer">
+                <Button variant="outlined">Home</Button>
+            </li>
+            <li onClick={() => setUrl("about")} className="hover:text-red-300 cursor-pointer">
+                <Button variant="outlined">About</Button>
+            </li>
+            <li onClick={() => setUrl("login")} className="hover:text-red-300 cursor-pointer">
+                <Button variant="outlined">Login</Button>
+            </li>
+         </ul>
+         <div className="p-5">
          {url == "home" && <HomePage />}
          {url == "about" && <AboutPage />}
          {url == "login" && <LoginPage />}
+         </div>
         </>
  );
 }
