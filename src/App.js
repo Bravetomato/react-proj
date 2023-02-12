@@ -16,9 +16,16 @@ import {
 import classNames from "classnames";
 import { atom, useRecoilState } from "recoil";
 
-// recoil-persist 적용하기-기본 할일 3개 생성하기
+// recoil-persist 적용하기-스토리지 키 분리하기
 import { recoilPersist } from "recoil-persist";
-const { persistAtom } = recoilPersist();
+
+// {persistAtom: persist분리할 스토리지 이름} = recoilPersist({key: "persist분리할 스토리지 이름"});
+const { persistAtom: persistAtomTodos } = recoilPersist({
+  key: "persistAtomTodos"
+});
+const { persistAtom: persistAtomLastTodoId } = recoilPersist({
+  key: "persistAtomLastTodoId"
+});
 
 const Alert = React.forwardRef((props, ref) => {
   return <MuiAlert {...props} ref={ref} variant="filled" />;
@@ -43,14 +50,16 @@ const todosAtom = atom({
       regDate: "2023-03-01 12:12:12",
       content: "운동",
     }],
-  effects_UNSTABLE: [persistAtom],
+    // effects_UNSTABLE: [persist분리할 스토리지 이름]
+  effects_UNSTABLE: [persistAtomTodos],
 });
 
 const lastTodoIdAtom = atom({
   key: "app/lastTodoIdAtom",
   // 기본 할일 id 3까지 만들었으므로 default는 0이 아닌 3으로 바꿔준다. 
   default: 3,
-  effects_UNSTABLE: [persistAtom],
+  // // effects_UNSTABLE: [persist분리할 스토리지 이름]
+  effects_UNSTABLE: [persistAtomLastTodoId],
 });
 
 function useTodosStatus() {
