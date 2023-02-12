@@ -16,10 +16,9 @@ import {
 import classNames from "classnames";
 import { atom, useRecoilState } from "recoil";
 
-// recoil-persist 적용하기-useNoticeSnackbarStatus에 적용
+// recoil-persist 적용하기-noticeSnackbarStatus에 recoil 적용 및 Root.js로 useEffect, MUI 이동.
 import { recoilPersist } from "recoil-persist";
 
-// {persistAtom: persist분리할 스토리지 이름} = recoilPersist({key: "persist분리할 스토리지 이름"});
 const { persistAtom: persistAtomTodos } = recoilPersist({
   key: "persistAtomTodos"
 });
@@ -33,7 +32,6 @@ const Alert = React.forwardRef((props, ref) => {
 
 const todosAtom = atom({
   key: "app/todosAtom",
-  // default 값에 기본 할일을 적는다. 
   default: [
     {
       id: 3,
@@ -50,23 +48,18 @@ const todosAtom = atom({
       regDate: "2023-03-01 12:12:12",
       content: "운동",
     }],
-    // effects_UNSTABLE: [persist분리할 스토리지 이름]
   effects_UNSTABLE: [persistAtomTodos],
 });
 
 const lastTodoIdAtom = atom({
   key: "app/lastTodoIdAtom",
-  // 기본 할일 id 3까지 만들었으므로 default는 0이 아닌 3으로 바꿔준다. 
   default: 3,
-  // // effects_UNSTABLE: [persist분리할 스토리지 이름]
   effects_UNSTABLE: [persistAtomLastTodoId],
 });
 
 function useTodosStatus() {
   const [todos, setTodos] = useRecoilState(todosAtom);
   const [lastTodoId, setLastTodoId] = useRecoilState(lastTodoIdAtom);
-  // todos, lastTodo는 atom적용. 
-  // 위의 두 변수는 전역적으로 쓰여야하기 때문.
   const lastTodoIdRef = useRef(lastTodoId);
   lastTodoIdRef.current = lastTodoId;
 
@@ -138,20 +131,8 @@ function useTodosStatus() {
   };
 }
 
-const muiThemePaletteKeys = [
-  "background",
-  "common",
-  "error",
-  "grey",
-  "info",
-  "primary",
-  "secondary",
-  "success",
-  "text",
-  "warning",
-];
-
-function NewTodoForm({ noticeSnackbarStatus }) {
+function NewTodoForm() {
+  const noticeSnackbarStatus = useNoticeSnackbarStatus();
   const todosStatus = useTodosStatus();
 
   const onSubmit = (e) => {
@@ -265,7 +246,8 @@ function useTodoOptionDrawerStatus() {
   };
 }
 
-function EditTodoModal({ status, todo, closeDrawer, noticeSnackbarStatus }) {
+function EditTodoModal({ status, todo, closeDrawer }) {
+  const noticeSnackbarStatus = useNoticeSnackbarStatus();
   const todosStatus = useTodosStatus();
 
   const close = () => {
@@ -338,7 +320,8 @@ function useEditTodoModalStatus() {
   };
 }
 
-function TodoOptionDrawer({ status, noticeSnackbarStatus }) {
+function TodoOptionDrawer({ status }) {
+  const noticeSnackbarStatus = useNoticeSnackbarStatus();
   const todosStatus = useTodosStatus();
 
   const editTodoModalStatus = useEditTodoModalStatus();
@@ -395,7 +378,7 @@ function TodoOptionDrawer({ status, noticeSnackbarStatus }) {
   );
 }
 
-function TodoList({ noticeSnackbarStatus }) {
+function TodoList() {
   const todosStatus = useTodosStatus();
   const todoOptionDrawerStatus = useTodoOptionDrawerStatus();
 
@@ -403,13 +386,11 @@ function TodoList({ noticeSnackbarStatus }) {
     <>
       <TodoOptionDrawer
         status={todoOptionDrawerStatus}
-        noticeSnackbarStatus={noticeSnackbarStatus}
       />
       <div className="mt-4 px-4">
         <ul>
           {todosStatus.todos.map((todo, index) => (
             <TodoListItem
-              noticeSnackbarStatus={noticeSnackbarStatus}
               key={todo.id}
               todo={todo}
               index={index}
@@ -477,7 +458,9 @@ function useNoticeSnackbarStatus() {
   };
 }
 
-function NoticeSnackbar({ status }) {
+function NoticeSnackbar() {
+  const status = useNoticeSnackbarStatus();
+
   return (
     <>
       <Snackbar
@@ -491,27 +474,7 @@ function NoticeSnackbar({ status }) {
   );
 }
 
-function App({ theme }) {
-  const todosStatus = useTodosStatus();
-  const noticeSnackbarStatus = useNoticeSnackbarStatus();
-
-  useEffect(() => {}, []);
-
-  useEffect(() => {
-    const r = document.querySelector(":root");
-
-    muiThemePaletteKeys.forEach((paletteKey) => {
-      const themeColorObj = theme.palette[paletteKey];
-
-      for (const key in themeColorObj) {
-        if (Object.hasOwnProperty.call(themeColorObj, key)) {
-          const colorVal = themeColorObj[key];
-          r.style.setProperty(`--mui-color-${paletteKey}-${key}`, colorVal);
-        }
-      }
-    });
-  }, []);
-
+function App() {
   return (
     <>
       <AppBar position="static">
@@ -521,9 +484,9 @@ function App({ theme }) {
           <div className="flex-1"></div>
         </Toolbar>
       </AppBar>
-      <NoticeSnackbar status={noticeSnackbarStatus} />
-      <NewTodoForm noticeSnackbarStatus={noticeSnackbarStatus} />
-      <TodoList noticeSnackbarStatus={noticeSnackbarStatus} />
+      <NoticeSnackbar />
+      <NewTodoForm />
+      <TodoList />
     </>
   );
 }
