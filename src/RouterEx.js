@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, } from "@mui/material";
 
-// page 앞으로 가기, 뒤로 가기 버튼 만들기. 
+// 현재 page 하이라이트
 
 function HomePage() {
     return(
@@ -34,7 +34,12 @@ function useHistory() {
     const [ url, setUrl ] = useState(initialUrl);
     const [ historyUrls, setHistoryUrls ] = useState([initialUrl]);
 
-    // 클릭하면 movePage의 seturl이 home으로 변화하고, setHistoryUrls에 적용됨.
+    const des = historyUrls.map((historyUrl, index) => 
+    <span style={{ color: currentIndex == index ? "red" : null }}
+    clsaaName="inline-block border border-black p-2">{historyUrl}</span>);
+    //  style={{ color: currentIndex == index ? "red" : null }} : map으로 돌려서 현 index와 선택된 index가 같으면
+    //  red로 색으로 바꾸고 , 다르면 null
+
     const movePage = (url) => {
         setUrl(url);
         setHistoryUrls([url, ...historyUrls]);
@@ -42,24 +47,18 @@ function useHistory() {
 
     // 뒤로가기 버튼
     const movePrev = () => {
-        // historyUrls 의 길이 이상으로 뒤로 갈 수 없도록 -1을 해준다. 
-        // 히스토리에 페이지가 하나일때 뒤로 가지 않고 현 페이지 보여주기 위해
         if ( currentIndex == historyUrls.length - 1 ) {
             return false;
         }
 
         const url = historyUrls[currentIndex + 1];
-        // currentIndex 즉 현재 0이기 때문에 +1 해서 뒤로 가는것
         setUrl(url);
-        // 현 url 은 0 으로 세팅.
         setCurrentIndex(currentIndex + 1);
-        // setCurrentIndex 은 1 로 세팅.
 
     };
 
     // 앞으로가기 버튼
     const moveNext = () => {
-        // 현재 페이지 그 이상 이동할 수 없도록 설정.
         if ( currentIndex == 0 ) {
             return false;
         }
@@ -75,6 +74,7 @@ function useHistory() {
         historyUrls,
         movePrev,
         moveNext,
+        des,
     };
 }
 
@@ -84,13 +84,12 @@ export default function RouterEx() {
     return(
         <>
         <div className="p-5">현재 주소 : {history.url}</div>
-        <div className="p-5">히스토리 : {history.historyUrls.join(",")}
+        <div className="p-5">히스토리 : {history.des}
         <br />
         <Button variant="contained" onClick={history.movePrev}>back</Button>
         <Button variant="contained" onClick={history.moveNext}>front</Button>
         </div>
          <ul className="flex gap-3 p-5">
-            {/* 클릭시 history 에 있는 movePage 를 home 으로 바꿔준다.  */}
             <li onClick={() => history.movePage("home")} className="hover:text-red-300 cursor-pointer">
                 <Button variant="outlined">Home</Button>
             </li>
