@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Button, } from "@mui/material";
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation, NavLink } from "react-router-dom";
 
-// Router 사용-현재 주소에 접근하기.
+// Router 사용-NavLink
 
 function HomeMainPage() {
     return(
@@ -27,7 +27,11 @@ export default function RouterEx() {
      <>
      {/* react router site 참고 */}
      {/* 현재 주소 location.pathname 으로 얻을 수 있다.  */}
-     <header>현재 주소 : {location.pathname}</header>
+     <header>현재 주소 : {location.pathname}
+      <hr />
+      <NavLink to="/home/main" className="btn btn-link">MAIN</NavLink>
+      <NavLink to="/home/about" className="btn btn-link">ABOUT</NavLink>
+     </header>
         <Routes>
             <Route path="/home/main" element={<HomeMainPage />} />
             <Route path="/home/about" element={<HomeAboutPage />} />
