@@ -16,7 +16,7 @@ import {
 import classNames from "classnames";
 import { atom, useRecoilState } from "recoil";
 
-// recoil-persist 적용하기-스토리지 키 분리하기
+// recoil-persist 적용하기-useNoticeSnackbarStatus에 적용
 import { recoilPersist } from "recoil-persist";
 
 // {persistAtom: persist분리할 스토리지 이름} = recoilPersist({key: "persist분리할 스토리지 이름"});
@@ -422,21 +422,49 @@ function TodoList({ noticeSnackbarStatus }) {
   );
 }
 
+//useNoticeSnackbarStatus 에 recoil 적용하기
+const noticeSnackbarInfoAtom = atom({
+  key: "app/noticeSnackbarInfoAtom",
+  default: {
+    opened: false,
+    autoHideDuration: 0, 
+    severity: "", 
+    msg: "",
+  },
+});
+
 function useNoticeSnackbarStatus() {
-  const [opened, setOpened] = useState(false);
-  const [autoHideDuration, setAutoHideDuration] = useState(null);
-  const [severity, setSeverity] = useState(null);
-  const [msg, setMsg] = useState(null);
+  // noticeSnackbarInfoAtom 의 default 값으로 모두 넘겨줌.
+  // const [opened, setOpened] = useState(false);
+  // const [autoHideDuration, setAutoHideDuration] = useState(null);
+  // const [severity, setSeverity] = useState(null);
+  // const [msg, setMsg] = useState(null);
+
+  const [ noticeSnackbarInfo, setNoticeSnackbarInfo ] = useRecoilState(noticeSnackbarInfoAtom);
+  const opened = noticeSnackbarInfo.opened;
+  const autoHideDuration = noticeSnackbarInfo.autoHideDuration;
+  const severity = noticeSnackbarInfo.severity;
+  const msg = noticeSnackbarInfo.msg;
 
   const open = (msg, severity = "success", autoHideDuration = 6000) => {
-    setOpened(true);
-    setAutoHideDuration(autoHideDuration);
-    setSeverity(severity);
-    setMsg(msg);
+    // setOpened(true);
+    // setAutoHideDuration(autoHideDuration);
+    // setSeverity(severity);
+    // setMsg(msg);
+    setNoticeSnackbarInfo({
+      opened: true,
+      autoHideDuration,
+      severity,
+      msg,
+    });
   };
 
   const close = () => {
-    setOpened(false);
+    // setOpened(false);
+    setNoticeSnackbarInfo({
+      ...noticeSnackbarInfo,
+      opened: false,
+    });
   };
 
   return {
