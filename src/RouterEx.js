@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Button, } from "@mui/material";
-import { Routes, Route, Navigate, useLocation, NavLink, useParams } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation, NavLink, useParams, useNavigate } from "react-router-dom";
 import classNames from "classnames";
 
-// Router 사용-게시물 만들어 상세페이지. useParams
+// Router 사용-useNavigate 로 상세페이지에서 뒤로가기.
 
 function HomeMainPage() {
     return(
@@ -39,12 +39,15 @@ function ArticleListPage() {
 }
 
 function ArticleDetailPage() {
+    const navigate = useNavigate();
     const {id} = useParams();
     // useParams 를 통해 url 파라미터를 얻는다.
 
-    return (<>
-    <h1>ARTICLE DETAIL</h1>
-    <h2>{id}번 게시물 상세페이지</h2>
+    return (
+    <>
+     <h1>ARTICLE DETAIL</h1>
+     <h2>{id}번 게시물 상세페이지</h2>
+     <Button variant="outlined" onClick={() => navigate(-1)}>Back</Button>
     </>
  );
 }
