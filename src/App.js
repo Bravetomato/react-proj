@@ -16,25 +16,41 @@ import {
 import classNames from "classnames";
 import { atom, useRecoilState } from "recoil";
 
-// recoil-persist 적용하기
+// recoil-persist 적용하기-기본 할일 3개 생성하기
 import { recoilPersist } from "recoil-persist";
 const { persistAtom } = recoilPersist();
 
+const Alert = React.forwardRef((props, ref) => {
+  return <MuiAlert {...props} ref={ref} variant="filled" />;
+});
 
 const todosAtom = atom({
   key: "app/todosAtom",
-  default: [],
+  // default 값에 기본 할일을 적는다. 
+  default: [
+    {
+      id: 3,
+      regDate: "2023-03-01 12:12:12",
+      content: "명상",
+    },
+    {
+      id: 2,
+      regDate: "2023-03-01 12:12:12",
+      content: "공부",
+    },
+    {
+      id: 1,
+      regDate: "2023-03-01 12:12:12",
+      content: "운동",
+    }],
   effects_UNSTABLE: [persistAtom],
 });
 
 const lastTodoIdAtom = atom({
   key: "app/lastTodoIdAtom",
-  default: 0,
+  // 기본 할일 id 3까지 만들었으므로 default는 0이 아닌 3으로 바꿔준다. 
+  default: 3,
   effects_UNSTABLE: [persistAtom],
-});
-
-const Alert = React.forwardRef((props, ref) => {
-  return <MuiAlert {...props} ref={ref} variant="filled" />;
 });
 
 function useTodosStatus() {
