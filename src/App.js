@@ -15,9 +15,8 @@ import {
 } from "@mui/material";
 import classNames from "classnames";
 import { atom, useRecoilState } from "recoil";
-
-// recoil-persist 적용하기-noticeSnackbarStatus에 recoil 적용 및 Root.js로 useEffect, MUI 이동.
 import { recoilPersist } from "recoil-persist";
+import RouterEx from "./RouterEx";
 
 const { persistAtom: persistAtomTodos } = recoilPersist({
   key: "persistAtomTodos"
@@ -403,7 +402,6 @@ function TodoList() {
   );
 }
 
-//useNoticeSnackbarStatus 에 recoil 적용하기
 const noticeSnackbarInfoAtom = atom({
   key: "app/noticeSnackbarInfoAtom",
   default: {
@@ -415,12 +413,6 @@ const noticeSnackbarInfoAtom = atom({
 });
 
 function useNoticeSnackbarStatus() {
-  // noticeSnackbarInfoAtom 의 default 값으로 모두 넘겨줌.
-  // const [opened, setOpened] = useState(false);
-  // const [autoHideDuration, setAutoHideDuration] = useState(null);
-  // const [severity, setSeverity] = useState(null);
-  // const [msg, setMsg] = useState(null);
-
   const [ noticeSnackbarInfo, setNoticeSnackbarInfo ] = useRecoilState(noticeSnackbarInfoAtom);
   const opened = noticeSnackbarInfo.opened;
   const autoHideDuration = noticeSnackbarInfo.autoHideDuration;
@@ -428,10 +420,6 @@ function useNoticeSnackbarStatus() {
   const msg = noticeSnackbarInfo.msg;
 
   const open = (msg, severity = "success", autoHideDuration = 6000) => {
-    // setOpened(true);
-    // setAutoHideDuration(autoHideDuration);
-    // setSeverity(severity);
-    // setMsg(msg);
     setNoticeSnackbarInfo({
       opened: true,
       autoHideDuration,
@@ -441,7 +429,6 @@ function useNoticeSnackbarStatus() {
   };
 
   const close = () => {
-    // setOpened(false);
     setNoticeSnackbarInfo({
       ...noticeSnackbarInfo,
       opened: false,
@@ -477,7 +464,7 @@ function NoticeSnackbar() {
 function App() {
   return (
     <>
-      <AppBar position="static">
+      {/* <AppBar position="static">
         <Toolbar className="justify-center">
           <div className="flex-1"></div>
           <span className="font-bold">NOTE</span>
@@ -486,7 +473,8 @@ function App() {
       </AppBar>
       <NoticeSnackbar />
       <NewTodoForm />
-      <TodoList />
+      <TodoList /> */}
+      <RouterEx />
     </>
   );
 }
