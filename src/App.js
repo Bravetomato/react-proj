@@ -14,17 +14,23 @@ import {
   Alert as MuiAlert,
 } from "@mui/material";
 import classNames from "classnames";
-
 import { atom, useRecoilState } from "recoil";
+
+// recoil-persist 적용하기
+import { recoilPersist } from "recoil-persist";
+const { persistAtom } = recoilPersist();
+
 
 const todosAtom = atom({
   key: "app/todosAtom",
   default: [],
+  effects_UNSTABLE: [persistAtom],
 });
 
 const lastTodoIdAtom = atom({
   key: "app/lastTodoIdAtom",
   default: 0,
+  effects_UNSTABLE: [persistAtom],
 });
 
 const Alert = React.forwardRef((props, ref) => {
@@ -436,11 +442,7 @@ function App({ theme }) {
   const todosStatus = useTodosStatus();
   const noticeSnackbarStatus = useNoticeSnackbarStatus();
 
-  useEffect(() => {
-    todosStatus.addTodo("운동\n스트레칭\n유산소\n런지\n스쿼트");
-    todosStatus.addTodo("요리");
-    todosStatus.addTodo("공부");
-  }, []);
+  useEffect(() => {}, []);
 
   useEffect(() => {
     const r = document.querySelector(":root");
@@ -462,7 +464,7 @@ function App({ theme }) {
       <AppBar position="static">
         <Toolbar className="justify-center">
           <div className="flex-1"></div>
-          <span className="font-bold">HAPPY NOTE</span>
+          <span className="font-bold">NOTE</span>
           <div className="flex-1"></div>
         </Toolbar>
       </AppBar>
@@ -474,7 +476,6 @@ function App({ theme }) {
 }
 
 // 유틸리티
-
 // 날짜 객체 입력받아서 문장(yyyy-mm-dd hh:mm:ss)으로 반환한다.
 function dateToStr(d) {
   const pad = (n) => {
