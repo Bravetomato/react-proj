@@ -1,116 +1,44 @@
 import React, { useState } from "react";
 import { Button, } from "@mui/material";
+import { Routes, Route, Navigate} from "react-router-dom";
 
-// 히스토리 이동 중 새 페이지로 이동 시 기존 기록의 일부 없애기.
+// Router 사용하기.
 
-function HomePage() {
+function HomeMainPage() {
     return(
     <>
-     <h1>Home 페이지</h1>
+     <h1>HOME, MAIN</h1>
     </>
  );
 }
 
-function AboutPage() {
+function HomeAboutPage() {
     return(
     <>
-     <h1>About 페이지</h1>
+     <h1>HOME, ABOUT</h1>
     </>
  );
 }
 
-function LoginPage() {
+function UserLoginPage() {
     return(
     <>
-     <h1>Login 페이지</h1>
+     <h1>User Login</h1>
     </>
  );
-}
-
-function useHistory() {
-    const initialUrl = "home";
-    const [ currentIndex, setCurrentIndex ] = useState(0);
-    // 현재 index 를 0으로 설정.
-    const [ url, setUrl ] = useState(initialUrl);
-    const [ historyUrls, setHistoryUrls ] = useState([initialUrl]);
-
-    const des = historyUrls.map((historyUrl, index) => 
-    <span style={{ color: currentIndex == index ? "red" : null }}
-    clsaaName="inline-block border border-black p-2">{historyUrl}</span>);
-    //  style={{ color: currentIndex == index ? "red" : null }} : map으로 돌려서 현 index와 선택된 index가 같으면
-    //  red로 색으로 바꾸고 , 다르면 null
-
-    const movePage = (url) => {
-        setCurrentIndex(0);
-        setUrl(url);
-
-        const newHistoryUrls = historyUrls.filter(
-            (_, index) => index >= currentIndex
-        );
-
-        setHistoryUrls([url, ...historyUrls]);
-    };
-
-    // 뒤로가기 버튼
-    const movePrev = () => {
-        if ( currentIndex == historyUrls.length - 1 ) {
-            return false;
-        }
-
-        const url = historyUrls[currentIndex + 1];
-        setUrl(url);
-        setCurrentIndex(currentIndex + 1);
-
-    };
-
-    // 앞으로가기 버튼
-    const moveNext = () => {
-        if ( currentIndex == 0 ) {
-            return false;
-        }
-
-        const url = historyUrls[currentIndex - 1];
-        setUrl(url);
-        setCurrentIndex(currentIndex - 1);
-    };
-
-    return {
-        url,
-        movePage,
-        historyUrls,
-        movePrev,
-        moveNext,
-        des,
-    };
 }
 
 export default function RouterEx() {
-    const history = useHistory();
-
+    // 이 자리는 기본 url이 들어간다. 
     return(
-        <>
-        <div className="p-5">현재 주소 : {history.url}</div>
-        <div className="p-5">히스토리 : {history.des}
-        <br />
-        <Button variant="contained" onClick={history.movePrev}>back</Button>
-        <Button variant="contained" onClick={history.moveNext}>front</Button>
-        </div>
-         <ul className="flex gap-3 p-5">
-            <li onClick={() => history.movePage("home")} className="hover:text-red-300 cursor-pointer">
-                <Button variant="outlined">Home</Button>
-            </li>
-            <li onClick={() => history.movePage("about")} className="hover:text-red-300 cursor-pointer">
-                <Button variant="outlined">About</Button>
-            </li>
-            <li onClick={() => history.movePage("login")} className="hover:text-red-300 cursor-pointer">
-                <Button variant="outlined">Login</Button>
-            </li>
-         </ul>
-         <div className="p-5">
-         {history.url == "home" && <HomePage />}
-         {history.url == "about" && <AboutPage />}
-         {history.url == "login" && <LoginPage />}
-         </div>
-        </>
+     <>
+        <Routes>
+            <Route path="/home/main" element={<HomeMainPage />} />
+            <Route path="/home/about" element={<HomeAboutPage />} />
+            <Route path="/user/login" element={<UserLoginPage />} />
+            <Route path="*" element={<Navigate to="/user/login" />} />
+            {/* "*" : 모든 url을 포함. 즉 해당 url 없을 때  "/user/login" 로 Navigate to , 향한다.*/}
+        </Routes>
+     </>
  );
 }
